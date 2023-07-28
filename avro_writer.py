@@ -5,12 +5,12 @@ from datetime import datetime
 from cloud.AWS.bucket.s3 import save_file_to_s3_bucket2
 import csv
 from util import log
-from variables import escrita
+from variables import config
 
 
 class Escrita:
-    bucket = escrita["bucket_avro"]
-    bucketerrors = escrita["bucket_errors"]
+    bucket = config['escrita']["bucket_avro"]
+    bucketerrors = config['escrita']["bucket_errors"]
 
     def __init__(self, tables: dict) -> None:
         """
@@ -34,7 +34,7 @@ class Escrita:
             if len(data['df'].index) != 0:
                 avropath = f"/tmp/{data['name']}.avro"
                 logger.info(f'iniciando escrita avro do arquivo {data["name"]}')
-                writer = DataFileWriter(open(avropath, escrita['write_format_avro']), DatumWriter(), data["schema"])
+                writer = DataFileWriter(open(avropath, config['escrita']['write_format_avro']), DatumWriter(), data["schema"])
 
                 # criando uma lista para armazenar os erros
                 erros = []
@@ -82,7 +82,7 @@ class Escrita:
                     headercsv = list(data['df'].columns)
                     headercsv.append('erro')
                     erros.insert(0, headercsv)
-                    with open(csvpath, escrita["write_format_csv"], newline='') as csvarquivo:
+                    with open(csvpath, config['escrita']["write_format_csv"], newline='') as csvarquivo:
                         # inserindo os erros no csv
                         writer = csv.writer(csvarquivo)
                         writer.writerows(erros)
