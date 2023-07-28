@@ -1,6 +1,2 @@
-escrita = {
-    "bucket_avro": "bucket to write avro files",
-    "bucket_errors": "bucket to write mismatched schema rows",
-    "write_format_avro": "wb",
-    "write_format_csv": "w"
-}
+from cloud.AWS.bucket.s3 import read_json_from_s3_object
+config = read_json_from_s3_object("bucket-configuration-name", "default-configuration-keys")
