@@ -60,22 +60,37 @@ class SQL:
         header_json = {i['name']: i['logicalType'] if 'logicalType' in i.keys() else
                        i['type'] for i in json['avro_schema']['fields']}
 
+        def read_csv():
+            dataframe = pd.read_csv(file, header=json['csv']['header'], encoding=json['csv']['encoding'],
+                                    sep=json['csv']['sep'], low_memory=json['csv']['low_memory'])
+            return dataframe
+
+        def read_excel():
+            dataframe = pd.read_excel(file)
+            return dataframe
+
+        depara = {
+            "csv": read_csv,
+            'xls': read_excel,
+            'xlsb': read_excel,
+            'xlsm': read_excel,
+            'xlsx': read_excel,
+        }
+
+        method = depara.get(ext)
+
         # iniciando a extracao
-        try:
-            if "csv" in ext:
-                df = pd.read_csv(file, header=json['csv']['header'], encoding=json['csv']['encoding'],
-                                 sep=json['csv']['sep'], low_memory=json['csv']['low_memory'], dtype=str)
-            else:
-                df = pd.read_excel(file, dtype=str)
-        except Exception as err:
-            logger.error(f"{key2} não conseguiu ser lido: {err}")
-            raise NameError(f"{key2} do arquivo não conseguiu ser lido: {err}")
+        if method:
+            df = method()
+        else:
+            logger.error(f"{key2} o arquivo nao é csv/excel")
+            raise NotImplementedError(f"{key2} o arquivo nao é csv/excel")
+
             # renomeando colunas para ficarem iguais ao esperado pelo avro
-        try:
-            df.rename(columns=dict(zip(df.columns, header_json.keys())), inplace=True)
-        except Exception as err:
-            logger.error(f"{key2} falha renomear colunas: {err}")
-            raise KeyError(f"{key2} falha renomear colunas: {err}")
+        if json.get('column_renames'):
+            df.rename(columns={
+                i: j for i, j in zip([df.filter(regex=name).columns.tolist()[0] for name in json.get('column_renames').keys()],
+                                     json.get('column_renames').values())}, inplace=True)
         # inserindo o path
         df[json["colunapath"]] = key2
 
