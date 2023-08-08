@@ -1,0 +1,47 @@
+{
+  "producer_config": {
+    "client.id": "client-id",
+    "bootstrap.servers": "my-cluster-kafka-bootstrap:9092",
+    "enable.idempotence": "true",
+    "acks": "all",
+    "linger.ms": 100
+  },
+  "avro_log_schema": {
+    "type": "record",
+    "name": "User",
+    "fields": [
+      {
+        "name": "data_hora",
+        "type": "string"
+      },
+      {
+        "name": "nome_arquivo",
+        "type": "string"
+      },
+      {
+        "name": "mensagem",
+        "type": "string"
+      },
+      {
+        "name": "log_mensagem",
+        "type": "string"
+      },
+      {
+        "name": "S3_ini",
+        "type": "string"
+      },
+      {
+        "name": "S3_fim",
+        "type": "string"
+      },
+      {
+        "name": "cliente",
+        "type": "string"
+      },
+      {
+        "name": "etapa",
+        "type": "string"
+      }
+    ]
+  }
+}
