@@ -105,41 +105,33 @@ class SQL:
         timestamp_dates_df = list(df.columns.intersection(timestamp_dates))
         column_boolean = [i for i, j in header_json.items() if 'boolean' in j]
         column_boolean_df = list(df.columns.intersection(column_boolean))
-        id_columns = [i for i in header_json.keys() if "id_" in i]
-        id_columns_df = list(df.columns.intersection(id_columns))
 
         # trocando o nan para null
         df = df.where((pd.notnull(df)), None)
+
         # tratando colunas com base no tipo
-        if len(floatconversion_df) > 0:
-            for coluna in floatconversion_df:
-                df[f"{coluna}{json['nome_original']}"] = df[coluna]
-                df[coluna] = df[coluna].apply(convert_decimal)
+        for float_column in floatconversion_df:
+            # df[f"{float_column}{json['nome_original']}"] = df[float_column] ORIGINAL COLUMN DEPRECATED
+            if 'float' not in str(df[float_column].dtype).lower():
+                df[float_column] = df[float_column].apply(convert_decimal)
 
-        for coluna2 in preencher:
-            if coluna2 not in df.columns:
-                df[coluna2] = 0
-            df[coluna2].fillna(0, inplace=True)
+        for float_int_column in preencher:
+            if float_int_column not in df.columns:
+                df[float_int_column] = 0
+            df[float_int_column].fillna(0, inplace=True)
 
-        for coluna5 in column_boolean_df:
-            df[coluna5] = df[coluna5].apply(convert_boolean)
+        for date_column in column_dates_df:
+            df[date_column] = pd.to_datetime(df[date_column], format="mixed", errors='coerce').dt.strftime('%Y-%m-%d')
+            
+        for timestamp_column in timestamp_dates_df:
+            df[timestamp_column] = pd.to_datetime(df[timestamp_column], format="mixed", errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S.%f')
+            
+        for bool_column in column_boolean_df:
+            if 'boolean' not in str(df[bool_column].dtype).lower():
+                df[bool_column] = df[bool_column].apply(convert_boolean)
 
-        for coluna4 in timestamp_dates_df:
-            df[coluna4] = pd.to_datetime(df[coluna4], format="mixed", errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S.%f')
-
-        for coluna3 in column_dates_df:
-            df[coluna3] = pd.to_datetime(df[coluna3], format="mixed", errors='coerce').dt.strftime('%Y-%m-%d')
-
-        for coluna6 in id_columns_df:
-            df[coluna6].fillna(0, inplace=True)
-            try:
-                df[coluna6] = df[coluna6].astype(float).astype(int)
-            except Exception as err:
-                logger.warning(f"id do campo {coluna6} nao e inteiro: {err}")
         # consertando os NaT gerados pelo to_datetime
         df = df.where((pd.notnull(df)), None)
-        # resetando os indices para que nao se tenha problema na iteracao linha a linha
-        df.reset_index()
         # criando o dicionario de retorno em que o programa ira trabalhar
         tabelas = [{"name": f"{json['name']}{key2.split('.')[0]}", "df": df,
                     "schema": avrsch_json, "header": header_json,
