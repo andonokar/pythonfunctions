@@ -64,7 +64,7 @@ def read_json_from_s3_object(bucket: str, key: str) -> dict:
         response = s3_client.get_object(Bucket=bucket, Key=key)
         json_object = response['Body'].read().decode('utf-8')
     except Exception as err:
-        log.createLogger(fsmg).error(f'GENERAL///Error while readingS3 file: {err}')
+        log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
 
     return json.loads(json_object)
 
@@ -83,7 +83,7 @@ def read_file_from_s3_object(bucket: str, key: str) -> bytes:
         s3_client = boto3.client('s3')
         response = s3_client.get_object(Bucket=bucket, Key=key)
     except Exception as err:
-        log.createLogger(fsmg).error(f'GENERAL///Error while readingS3 file: {err}')
+        log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
 
     return response['Body'].read()
 
@@ -105,8 +105,8 @@ def save_file_to_s3_bucket2(file_path: str, bucket: str, key: str):
         response = s3_client.meta.client.upload_file(file_path, bucket, key)
 
     except ClientError as exc:
-        logger.error('GENERAL///Wrong key, no such file in bucket')
+        logger.error('Wrong key, no such file in bucket')
         raise ValueError('Wrong key, no such file in bucket') from exc
     else:
-        logger.info(f'GENERAL///*** Added report to bucket: {bucket}, with key: {key}')
+        logger.info(f'*** Added report to bucket: {bucket}, with key: {key}')
         return response
