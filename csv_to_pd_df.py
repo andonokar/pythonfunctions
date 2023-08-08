@@ -19,7 +19,7 @@ def convert_boolean(val):
 
 def convert_decimal(val):
     """
-    Trata os decimais no caso de não estarem formatados corretamente
+    Trata os decimais no caso de não estarem como float
     """
     if ',' in str(val):
         try:
@@ -60,15 +60,18 @@ class CsvExcelExtractor:
         header_json = {i['name']: i['logicalType'] if 'logicalType' in i.keys() else
                        i['type'] for i in json['avro_schema']['fields']}
 
+        # inner method for reading csv
         def read_csv():
             dataframe = pd.read_csv(file, header=json['csv']['header'], encoding=json['csv']['encoding'],
                                     sep=json['csv']['sep'], low_memory=json['csv']['low_memory'])
             return dataframe
 
+        # inner method for reading excel
         def read_excel():
             dataframe = pd.read_excel(file)
             return dataframe
 
+        # declaring the reading method based on the extension
         depara = {
             "csv": read_csv,
             'xls': read_excel,
@@ -86,7 +89,7 @@ class CsvExcelExtractor:
             logger.error(f"{key2} o arquivo nao é csv/excel")
             raise NotImplementedError(f"{key2} o arquivo nao é csv/excel")
 
-            # renomeando colunas para ficarem iguais ao esperado pelo avro
+        # renomeando colunas com suporte a regex
         if json.get('column_renames'):
             df.rename(columns={
                 i: j for i, j in zip([df.filter(regex=name).columns.tolist()[0] for name in json.get('column_renames').keys()],
