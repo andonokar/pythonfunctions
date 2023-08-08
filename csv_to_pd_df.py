@@ -114,7 +114,6 @@ class CsvExcelExtractor:
 
         # tratando colunas com base no tipo
         for float_column in floatconversion_df:
-            # df[f"{float_column}{json['nome_original']}"] = df[float_column] ORIGINAL COLUMN DEPRECATED
             if 'float' not in str(df[float_column].dtype).lower():
                 df[float_column] = df[float_column].apply(convert_decimal)
 
