@@ -1,6 +1,5 @@
 import logging
-from functools import wraps, partial
-from util.dataclient import Client
+from functools import wraps
 
 
 def createLogger(source_log: str = __name__):
@@ -23,11 +22,6 @@ def createLogger(source_log: str = __name__):
     return logger
 
 
-def message_error(client: Client, message: str) -> None:
-    msg_log = createLogger()
-    msg_log.error(message)
-
-
 def logs(func):
     """
     Decorator para monitorar vi log qualquer função desejada
@@ -48,5 +42,3 @@ def logs(func):
         return result
 
     return inner
-
-
