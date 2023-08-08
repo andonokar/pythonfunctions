@@ -10,33 +10,10 @@ import json
 from datetime import datetime
 from variables import kafka_config
 
-# producer_config = {
-#     'client.id': 'client-id',
-#     'bootstrap.servers': "my-cluster-kafka-bootstrap:9092",
-#     'enable.idempotence': 'true',
-#     'acks': 'all',
-#     'linger.ms': 100,
-# }
-
 producer = Producer(kafka_config.get('producer_config'))
 
 avro_schema_str = json.dumps(kafka_config.get('avro_log_schema'))
-# avro_schema_str = """
-# {
-#     "type": "record",
-#     "name": "User",
-#     "fields": [
-#         {"name": "data_hora", "type": "string"},
-#         {"name": "nome_arquivo", "type": "string"},
-#         {"name": "mensagem", "type": "string"},
-#         {"name": "log_mensagem", "type": "string"},
-#         {"name": "S3_ini", "type": "string"},
-#         {"name": "S3_fim", "type": "string"},
-#         {"name": "cliente", "type": "string"},
-#         {"name": "etapa", "type": "string"}
-#     ]
-# }
-# """
+
 schema_registry_conf = {'url': 'http://schema-registry:8081'}
 schema_registry_client = SchemaRegistryClient(schema_registry_conf)
 avro_serializer = AvroSerializer(schema_registry_client, avro_schema_str)
