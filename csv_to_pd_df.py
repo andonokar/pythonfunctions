@@ -33,7 +33,7 @@ def convert_decimal(val):
             return 0
 
 
-class SQL:
+class CsvExcelExtractor:
     @log.logs
     def prepara_tabela(self, file, key):
         """
@@ -44,7 +44,7 @@ class SQL:
         :return: retorna as tabelas a serem checadas pelo avro em uma lista de dicionarios
         """
         # criando o log
-        fmsg = f'{SQL.__name__}.{self.prepara_tabela.__name__}'
+        fmsg = f'{CsvExcelExtractor.__name__}.{self.prepara_tabela.__name__}'
         logger = log.createLogger(fmsg)
 
         # tratando os nomes a ser utilizado para o path e extensao
