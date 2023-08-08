@@ -51,7 +51,7 @@ class CsvExcelExtractor:
         folder = key.split("/")[0]
         json = config.get(folder)
         if not json:
-            logger.erro("nenhum json configurado pra essa extracao sql")
+            logger.error("nenhum json configurado pra essa extracao sql")
             raise NotImplementedError("nenhum json configurado pra essa extracao sql")
 
         ext = key.split('.')[-1].lower()
@@ -124,16 +124,15 @@ class CsvExcelExtractor:
             df[float_int_column].fillna(0, inplace=True)
 
         for date_column in column_dates_df:
-            df[date_column] = pd.to_datetime(df[date_column], format="mixed", errors='coerce').dt.strftime('%Y-%m-%d')
-            
+            df[date_column] = pd.to_datetime(df[date_column], errors='coerce').dt.strftime('%Y-%m-%d')
+
         for timestamp_column in timestamp_dates_df:
-            df[timestamp_column] = pd.to_datetime(df[timestamp_column], format="mixed", errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S.%f')
+            df[timestamp_column] = pd.to_datetime(df[timestamp_column], errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S.%f')
             
         for bool_column in column_boolean_df:
             if 'boolean' not in str(df[bool_column].dtype).lower():
                 df[bool_column] = df[bool_column].apply(convert_boolean)
 
-        # consertando os NaT gerados pelo to_datetime
         df = df.where((pd.notnull(df)), None)
         # criando o dicionario de retorno em que o programa ira trabalhar
         tabelas = [{"name": f"{json['name']}{key2.split('.')[0]}", "df": df,
