@@ -1,7 +1,7 @@
 import pandas as pd
 import pyodbc
 from datetime import datetime
-from cloud.AWS.bucket.s3 import save_file_to_s3_bucket2
+from cloud.basic_s3_functions import save_file_to_s3_bucket2
 from util import log
 import csv
 import os
