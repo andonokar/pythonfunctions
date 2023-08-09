@@ -1,5 +1,6 @@
 """s3 utilities"""
 import json
+import yaml
 import boto3
 from botocore.exceptions import ClientError
 from util import log
@@ -58,15 +59,34 @@ def read_json_from_s3_object(bucket: str, key: str) -> dict:
     :return: JSON file as a python dictionary
     """
     fsmg = f'{__name__}:{read_json_from_s3_object.__name__}'
-    json_object = None
     try:
         s3_client = boto3.client('s3')
         response = s3_client.get_object(Bucket=bucket, Key=key)
         json_object = response['Body'].read().decode('utf-8')
     except Exception as err:
         log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
-
+        raise Exception(f'Error while readingS3 file: {err}')
     return json.loads(json_object)
+
+
+@log.logs
+def read_yaml_from_s3_object(bucket: str, key: str) -> dict:
+    """
+    Read YAML file in s3 bucket
+    :param bucket: s3 bucket name
+    :param key: filename
+    :return: YAML file as a python dictionary
+    """
+    fsmg = f'{__name__}:{read_json_from_s3_object.__name__}'
+    try:
+        s3_client = boto3.client('s3')
+        response = s3_client.get_object(Bucket=bucket, Key=key)
+        yaml_object = response['Body'].read()
+    except Exception as err:
+        log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
+        raise Exception(f'Error while readingS3 file: {err}')
+
+    return yaml.safe_load(yaml_object)
 
 
 @log.logs

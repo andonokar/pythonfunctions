@@ -12,7 +12,7 @@ class Escrita:
     bucket = config['escrita']["bucket_avro"]
     bucketerrors = config['escrita']["bucket_errors"]
 
-    def __init__(self, tables: dict) -> None:
+    def __init__(self, tables: list[dict]) -> None:
         """
         :param tables: list of dict - keys = name, df, header, schema, s3key, bucket, bucketerrors
         name : nome da tabela
@@ -34,7 +34,7 @@ class Escrita:
             if len(data['df'].index) != 0:
                 avropath = f"/tmp/{data['name']}.avro"
                 logger.info(f'iniciando escrita avro do arquivo {data["name"]}')
-                writer = DataFileWriter(open(avropath, config['escrita']['write_format_avro']), DatumWriter(), data["schema"])
+                writer = DataFileWriter(open(avropath, 'wb'), DatumWriter(), data["schema"])
 
                 # criando uma lista para armazenar os erros
                 erros = []
@@ -82,7 +82,7 @@ class Escrita:
                     headercsv = list(data['df'].columns)
                     headercsv.append('erro')
                     erros.insert(0, headercsv)
-                    with open(csvpath, config['escrita']["write_format_csv"], newline='') as csvarquivo:
+                    with open(csvpath, 'w', newline='') as csvarquivo:
                         # inserindo os erros no csv
                         writer = csv.writer(csvarquivo)
                         writer.writerows(erros)
