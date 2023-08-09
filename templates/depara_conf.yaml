@@ -1,0 +1,3 @@
+domrock-ambienteteste-v1:
+  bucket: bucket-cliente-configuracao
+  key: conf/cliente.json
