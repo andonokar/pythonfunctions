@@ -5,14 +5,11 @@ from datetime import datetime
 from cloud.basic_s3_functions import save_file_to_s3_bucket2
 import csv
 from util import log
-from variables import config
 
 
 class Escrita:
-    bucket = config['escrita']["bucket_avro"]
-    bucketerrors = config['escrita']["bucket_errors"]
 
-    def __init__(self, tables: list[dict]) -> None:
+    def __init__(self, tables: list[dict], conf: dict) -> None:
         """
         :param tables: list of dict - keys = name, df, header, schema, s3key, bucket, bucketerrors
         name : nome da tabela
@@ -21,6 +18,8 @@ class Escrita:
         schema: o schema do avro
         """
         self.tables = tables
+        self.bucket = conf['bucket_avro']
+        self.bucketerrors = conf['bucket_errors']
 
     @log.logs
     def escreve(self):
@@ -59,7 +58,6 @@ class Escrita:
                         sucess += 1
                     # gerando a lista com os dados que nao passaram
                     except Exception as err:
-                        print(sucess)
                         erro = list(row)
                         erro.append(err)
                         erros.append(erro)
@@ -73,7 +71,6 @@ class Escrita:
                 date_str = now.strftime('%Y-%m-%d')
                 time_str = now.strftime('%H-%M')
                 show = f"{date_str}-{time_str}"
-                save_file_to_s3_bucket2(avropath, self.bucket, f'{data["s3key"]}{show}_{data["name"]}.avro')
                 # criando o csv caso a tabela tenha algum dado errado
                 if len(erros) > 0:
                     logger.info(f'iniciando escrita csv do arquivo{data["name"]}')
@@ -87,7 +84,7 @@ class Escrita:
                         writer = csv.writer(csvarquivo)
                         writer.writerows(erros)
                         logger.info(f'csv escrito com sucesso!')
-
                     save_file_to_s3_bucket2(csvpath, self.bucketerrors, f'{data["s3key"]}{show}_{data["name"]}.csv')
+                save_file_to_s3_bucket2(avropath, self.bucket, f'{data["s3key"]}{show}_{data["name"]}.avro')
             else:
                 logger.info(f'{data["name"]} sem linhas para gerar um avro')

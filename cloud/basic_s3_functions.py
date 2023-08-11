@@ -125,8 +125,8 @@ def save_file_to_s3_bucket2(file_path: str, bucket: str, key: str):
         response = s3_client.meta.client.upload_file(file_path, bucket, key)
 
     except ClientError as exc:
-        logger.error('Wrong key, no such file in bucket')
-        raise ValueError('Wrong key, no such file in bucket') from exc
+        logger.error('Wrong key or bucket')
+        raise ValueError('Wrong key or bucket') from exc
     else:
         logger.info(f'*** Added report to bucket: {bucket}, with key: {key}')
         return response

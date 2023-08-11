@@ -19,6 +19,6 @@ def read_and_redirect(bucket, file, key):
     escrita_conf, file_conf = client.get_conf()
     extrator = SelectClassExtraction(file_conf).get_class()
     tables = CriaDataFrame(extrator, bucket, file, key, file_conf).extrair_para_avro()
-    writer = Escrita(tables)
+    writer = Escrita(tables, escrita_conf)
     writer.escreve()
     move_file_s3(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
