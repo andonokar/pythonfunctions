@@ -3,7 +3,8 @@ from avro.schema import parse
 from json import dumps
 from util import log
 from io import BytesIO
-from globalresources.basic_extract_functions import convert_boolean, convert_decimal
+from globalresources.basic_extract_functions import (
+    convert_boolean, convert_decimal, rename_columns, index_rename_columns, regex_rename_columns)
 
 
 class Extrator:
@@ -82,16 +83,17 @@ class CsvExcelExtractor(Extrator):
         # renomeando colunas com suporte a regex
         column_renames = config.get('column_renames')
         if column_renames:
-            if config.get('regex', False) is True:
-                try:
-                    columns = {i: j for i, j in zip([df.filter(regex=name).columns.tolist()[0] for name in column_renames.keys()],
-                               column_renames.values())}
-                except IndexError:
-                    logger.error('um ou mais regex nao resgataram uma coluna para captura')
-                    raise NameError('um ou mais regex nao resgataram uma coluna para captura')
-                df.rename(columns=columns, inplace=True)
-            else:
-                df.rename(columns=column_renames)
+            rename_functions = {
+                'normal': rename_columns,
+                'regex': regex_rename_columns,
+                'index': index_rename_columns
+            }
+            rename_type = config.get('rename_type', 'normal')
+            rename_function = rename_functions.get(rename_type)
+            if not rename_function:
+                logger.error(f'o metodo {rename_type} para renomear colunas nao existe')
+                raise NotImplementedError(f'o metodo {rename_type} para renomear colunas nao existe')
+            df = rename_function(df, column_renames, logger)
 
         # inserindo o path
         df[config.get("colunapath", 'url_path')] = key2

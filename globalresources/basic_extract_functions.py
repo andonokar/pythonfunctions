@@ -24,3 +24,29 @@ def convert_decimal(val):
             return float(val)
         except:
             return 0
+
+
+def rename_columns(df, column_renames, logger):
+    df = df.rename(columns=column_renames)
+    return df
+
+
+def regex_rename_columns(df, column_renames, logger):
+    try:
+        columns = {i: j for i, j in zip([df.filter(regex=name).columns.tolist()[0] for name in column_renames.keys()],
+                                        column_renames.values())}
+    except IndexError:
+        logger.error('um ou mais regex nao resgataram uma coluna para captura')
+        raise NameError('um ou mais regex nao resgataram uma coluna para captura')
+    df = df.rename(columns=columns)
+    return df
+
+
+def index_rename_columns(df, column_renames, logger):
+    try:
+        columns = {df.columns.tolist()[int(i)]: j for i, j in column_renames.items()}
+    except IndexError:
+        logger.error('o indice da coluna nao existe')
+        raise IndexError('o indice da coluna nao existe')
+    df = df.rename(columns=columns)
+    return df

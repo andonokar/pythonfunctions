@@ -2,23 +2,23 @@
 escrita:
   bucket_avro: landingzone-933447815926 # Sucess .avro file
   bucket_errors: datalake-errors-933447815926 # Error files
-
-# Where to move files after being processed
-movefiles:
   destinationbucket: datalake-processed-files-933447815926 # files successfully processed
-  destinationfailedbucket: datalake-errors-933447815926 # files completely unprocessed
-  firstfoldername: ORIGINALFILES/ # the first folder in where to put them
+  prefixname: ORIGINALFILES/CSN/ # the first folder in where to put them
 
 # Extraction folder from the client bucket
 DEMANDA:
-  class: ExtractorClass # Optional, if empty, return default CsvExcelExtractor
-  regex: true # Optional, use true when column remapping depends on regex, defaults to False, meaningless when column_renames doesn't exist
+  class: CsvExcelExtractor # Optional, if empty, return default CsvExcelExtractor
   csv: # If extracting csv files, the header is MANDATORY, otherwise will throw exception
     header: 0 # MANDATORY, The line which becomes the column names
     encoding: UTF-8 # Optional, Defaults to UTF-8
     sep: "," # Optional, Defaults to ','
     low_memory: false # Optional, Defaults to false
-  column_renames:   # Optional, use when need to rename columns, with regex support if regex is set to true
+  rename_type: regex # Optional, formats accepted: normal, regex, index. Defaults to normal
+  # Warning, when using regex or index, index or name errors can happen
+  column_renames:   # Optional, use when need to rename columns
+    # "(?i).*m.s\\s*de\\s*prg.*": data_demanda - regex
+    # "0": data_demanda - index
+    # data-demanda: data_demanda - normal
     "(?i).*m.s\\s*de\\s*prg.*": data_demanda
     "(?i).*c.digo.*": cod_cliente
     "(?i).*grupo.*": gr_merc
@@ -52,5 +52,5 @@ DEMANDA:
       - 'null'
       - string
   name: demanda_  # prefix for the avro-file being saved in landingzone
-  s3key: DEMANDA/ # the folder for the avro-file being saved in landingzone
+  s3key: CSN/DEMANDA/ # the folder for the avro-file being saved in landingzone
   colunapath: url_path # Optional, the column to be created with the file key, defaults to url_path
