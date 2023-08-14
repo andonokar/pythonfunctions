@@ -3,6 +3,7 @@ from avro_writer import Escrita
 from globalresources.reader_client import Client
 from globalresources.select_extraction_class import SelectClassExtraction
 from cloud.basic_s3_functions import move_file_s3
+from util.log_kafka import createloggerforkafka
 
 
 def read_and_redirect(bucket, file, key):
@@ -18,7 +19,10 @@ def read_and_redirect(bucket, file, key):
     client = Client(bucket, key)
     escrita_conf, file_conf = client.get_conf()
     extrator = SelectClassExtraction(file_conf).get_class()
-    tables = CriaDataFrame(extrator, bucket, file, key, file_conf).extrair_para_avro()
-    writer = Escrita(tables, escrita_conf)
-    writer.escreve()
-    move_file_s3(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
+    try:
+        tables = CriaDataFrame(extrator, bucket, file, key, file_conf).extrair_para_avro()
+        writer = Escrita(tables, escrita_conf)
+        writer.escreve()
+        move_file_s3(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
+    except Exception as err:
+        logger = createloggerforkafka(read_and_redirect.__name__, topic=escrita_conf["topic"], )

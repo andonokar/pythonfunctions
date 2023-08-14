@@ -9,11 +9,10 @@ from globalresources.basic_extract_functions import (
 
 class Extrator:
 
-    def prepara_tabela(self, bucket: str, file: BytesIO, key: str, config: dict):
+    def prepara_tabela(self, file: BytesIO | str, key: str, config: dict) -> list[dict]:
         """
         Realiza todo o processo de extracao e tratamento/enriquecimentos basicos e fica pronta pra ter o schema
         testado para geracao do avro
-        :param bucket: o bucket do arquivo
         :param file: o arquivo em bytes
         :param key: o caminho do arquivo
         :param config: a configuracao da extracao
@@ -24,7 +23,7 @@ class Extrator:
 
 class CsvExcelExtractor(Extrator):
     @log.logs
-    def prepara_tabela(self, bucket, file, key, config):
+    def prepara_tabela(self, file, key, config):
 
         # criando o log
         fmsg = f'{CsvExcelExtractor.__name__}.{self.prepara_tabela.__name__}'
@@ -59,7 +58,15 @@ class CsvExcelExtractor(Extrator):
 
         # inner method for reading excel
         def read_excel():
-            dataframe = pd.read_excel(file)
+            excel_options = config.get('excel')
+            if not excel_options:
+                logger.error('chave excel ausente na configuracao yaml')
+                raise KeyError('chave excel ausente na configuracao yaml')
+            header = excel_options.get('header')
+            if not header:
+                logger.error('a chave header deve ser especificado')
+                raise KeyError('a chave header deve ser especificado')
+            dataframe = pd.read_excel(file, header=header)
             return dataframe
 
         # declaring the reading method based on the extension

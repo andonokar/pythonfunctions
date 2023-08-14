@@ -19,12 +19,12 @@ schema_registry_client = SchemaRegistryClient(schema_registry_conf)
 avro_serializer = AvroSerializer(schema_registry_client, avro_schema_str)
 
 
-def createloggerforkafka(source_log: str = __name__, topic: str = 'logs'):
+def createloggerforkafka(source_log: str = __name__, topic: str = 'logs', **kwargs):
     """
-    Função para criar um ponto de observação através do uso de logs
-
+    Função para criar um ponto de observação através do uso de logs e enviar ao kafka
     :return:
     """
+    data = kwargs
     log_format = '%(levelname)-8s||%(asctime)s||%(name)-12s||%(lineno)d||%(message)s'
     logging.basicConfig(level=logging.INFO, format=log_format)
     logger = logging.getLogger(source_log)

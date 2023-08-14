@@ -4,6 +4,7 @@ escrita:
   bucket_errors: datalake-errors-933447815926 # Error files
   destinationbucket: datalake-processed-files-933447815926 # files successfully processed
   prefixname: ORIGINALFILES/CSN/ # the first folder in where to put them
+  topic: csn-logs # the topic to write the logs in kafka
 
 # Extraction folder from the client bucket
 DEMANDA:
@@ -13,6 +14,8 @@ DEMANDA:
     encoding: UTF-8 # Optional, Defaults to UTF-8
     sep: "," # Optional, Defaults to ','
     low_memory: false # Optional, Defaults to false
+  excel: # If extracting excel files, the header is MANDATORY, otherwise will throw exception
+    header: 1 # MANDATORY, The line which becomes the column names
   rename_type: regex # Optional, formats accepted: normal, regex, index. Defaults to normal
   # Warning, when using regex or index, index or name errors can happen
   column_renames:   # Optional, use when need to rename columns

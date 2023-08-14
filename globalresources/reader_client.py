@@ -40,7 +40,8 @@ class Client:
         bucket_errors = escrita_conf.get('bucket_errors')
         destinationbucket = escrita_conf.get('destinationbucket')
         prefixname = escrita_conf.get('prefixname')
-        if not(bucket_avro or bucket_errors or destinationbucket or prefixname):
+        topic = escrita_conf.get('topic')
+        if not(bucket_avro or bucket_errors or destinationbucket or prefixname or topic):
             logger.error('as configuracoes de escrita estao mal configuradas, preencha de acordo com o template')
             raise KeyError('as configuracoes de escrita estao mal configuradas, preencha de acordo com o template')
         if not escrita_conf['prefixname'].endswith('/'):
