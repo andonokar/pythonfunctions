@@ -20,7 +20,5 @@ avro_log_schema:
     type: string
   - name: S3_fim
     type: string
-  - name: cliente
-    type: string
   - name: etapa
     type: string
