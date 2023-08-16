@@ -6,3 +6,4 @@ confluent-kafka==2.2.0
 fastavro==1.8.2
 cython==3.0.0
 pyyaml==6.0.1
+requests==2.31.0
