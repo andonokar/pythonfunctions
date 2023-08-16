@@ -16,7 +16,7 @@ class SelectClassExtraction:
         logger = log.createLogger(fmsg)
         extraction_class = self.conf.get('class', 'CsvExcelExtractor')
         check_class = globals().get(extraction_class)
-        if not check_class:
+        if not check_class or not isinstance(check_class, type):
             logger.error(f'A classe {extraction_class} nao existe')
             raise NotImplementedError(f'A classe {extraction_class} nao existe')
         return check_class

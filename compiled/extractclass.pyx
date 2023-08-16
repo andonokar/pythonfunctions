@@ -1,11 +1,96 @@
 import pandas as pd
 from avro.schema import parse
 from json import dumps
-from util import log
 from io import BytesIO
-from globalresources.basic_extract_functions import (
-    convert_boolean, convert_decimal, rename_columns, index_rename_columns, regex_rename_columns)
+import logging
+from functools import wraps
 
+
+def createLogger(source_log: str = __name__):
+    """
+    Função para criar um ponto de observaçã atravé do uso de logs
+
+    :return:
+    """
+    log_format = '%(levelname)-8s||%(asctime)s||%(name)-12s||%(lineno)d||%(message)s'
+    logging.basicConfig(level=logging.INFO, format=log_format)
+    logger = logging.getLogger(source_log)
+    return logger
+
+def logs(func):
+    """
+    Decorator para monitorar vi log qualquer função desejada
+    :param func: não da função de entrada
+    :return: retorna a função de entrada
+    """
+
+    @wraps(func)
+    def inner(*args, **kwargs):
+        logger = createLogger(func.__name__)
+        # log_message = f'stating.... func:{func.__name__}:args:{args}:kwargs:{kwargs}'
+        log_message = f'stating....'
+        logger.info(log_message)
+        result = func(*args, **kwargs)
+        # log_message = f'finished func:{func.__name__}:args:{args}:kwargs:{kwargs}'
+        log_message = f'finished.... '
+        logger.info(log_message)
+        return result
+
+    return inner
+
+
+def convert_boolean(val):
+    """
+    Trata os decimais no caso de não estarem formatados corretamente
+    """
+    if val:
+        if val in [0, '0', 'false', 'False', 'FALSE', False]:
+            return False
+        if val in [1, '1', 'true', "True", "TRUE", True]:
+            return True
+    return None
+
+
+def convert_decimal(val):
+    """
+    Trata os decimais no caso de não estarem como float
+    """
+    if ',' in str(val):
+        try:
+            return float(str(val).replace('.', '').replace(',', '.'))
+        except:
+            return 0
+    else:
+        try:
+            return float(val)
+        except:
+            return 0
+
+
+def rename_columns(df, column_renames, logger):
+    df = df.rename(columns=column_renames)
+    return df
+
+
+def regex_rename_columns(df, column_renames, logger):
+    try:
+        columns = {i: j for i, j in zip([df.filter(regex=name).columns.tolist()[0] for name in column_renames.keys()],
+                                        column_renames.values())}
+    except IndexError:
+        logger.error('um ou mais regex nao resgataram uma coluna para captura')
+        raise NameError('um ou mais regex nao resgataram uma coluna para captura')
+    df = df.rename(columns=columns)
+    return df
+
+
+def index_rename_columns(df, column_renames, logger):
+    try:
+        columns = {df.columns.tolist()[int(i)]: j for i, j in column_renames.items()}
+    except IndexError:
+        logger.error('o indice da coluna nao existe')
+        raise IndexError('o indice da coluna nao existe')
+    df = df.rename(columns=columns)
+    return df
 
 class Extrator:
 
@@ -22,12 +107,12 @@ class Extrator:
 
 
 class CsvExcelExtractor(Extrator):
-    @log.logs
+    @logs
     def prepara_tabela(self, file, key, config):
 
         # criando o log
         fmsg = f'{CsvExcelExtractor.__name__}.{self.prepara_tabela.__name__}'
-        logger = log.createLogger(fmsg)
+        logger = createLogger(fmsg)
 
         # tratando os nomes a ser utilizado para o path e extensao
         ext = key.split('.')[-1].lower()
@@ -38,7 +123,7 @@ class CsvExcelExtractor(Extrator):
             logger.error(f'Schema invalido para o avro: {err}')
             raise Exception(f'Schema invalido para o avro: {err}')
         header_config = {i['name']: i['logicalType'] if 'logicalType' in i.keys() else
-                         i['type'] for i in config['avro_schema']['fields']}
+        i['type'] for i in config['avro_schema']['fields']}
 
         # inner method for reading csv
         def read_csv():
@@ -134,8 +219,9 @@ class CsvExcelExtractor(Extrator):
             df[date_column] = pd.to_datetime(df[date_column], errors='raise').dt.strftime('%Y-%m-%d')
 
         for timestamp_column in timestamp_dates_df:
-            df[timestamp_column] = pd.to_datetime(df[timestamp_column], errors='raise').dt.strftime('%Y-%m-%d %H:%M:%S.%f')
-            
+            df[timestamp_column] = pd.to_datetime(df[timestamp_column], errors='raise').dt.strftime(
+                '%Y-%m-%d %H:%M:%S.%f')
+
         for bool_column in column_boolean_df:
             if 'boolean' not in str(df[bool_column].dtype).lower():
                 df[bool_column] = df[bool_column].apply(convert_boolean)
@@ -147,3 +233,4 @@ class CsvExcelExtractor(Extrator):
                     "s3key": config['s3key']}]
         logger.info(f'extracao {key2} realizada com sucesso')
         return tabelas
+
