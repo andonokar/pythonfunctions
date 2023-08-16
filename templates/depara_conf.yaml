@@ -1,3 +1,3 @@
-domrock-ambienteteste-v1:
-  bucket: bucket-cliente-configuracao
-  key: conf/cliente.yaml
+test-prada-files:
+  bucket: test-conf-domrock
+  key: csn.yaml

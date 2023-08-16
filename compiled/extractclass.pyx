@@ -5,10 +5,13 @@ from io import BytesIO
 import logging
 from functools import wraps
 
+class Geratoken:
+    pass
+
 
 def createLogger(source_log: str = __name__):
     """
-    Função para criar um ponto de observaçã atravé do uso de logs
+    Função para criar um ponto de observaçã através do uso de logs
 
     :return:
     """
