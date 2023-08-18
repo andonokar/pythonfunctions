@@ -5,6 +5,7 @@ from util import log
 from io import BytesIO
 from globalresources.basic_extract_functions import (
     convert_boolean, convert_decimal, rename_columns, index_rename_columns, regex_rename_columns)
+import sys
 
 
 class Extrator:
@@ -20,14 +21,22 @@ class Extrator:
         """
         pass
 
+    @staticmethod
+    def check_token(config, logger):
+        if config.get('hash') != 'uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7L':
+            logger.critical('o token encontra-se invalido, contate o suporte')
+            sys.exit(1)
+
 
 class CsvExcelExtractor(Extrator):
     @log.logs
     def prepara_tabela(self, file, key, config):
-
         # criando o log
         fmsg = f'{CsvExcelExtractor.__name__}.{self.prepara_tabela.__name__}'
         logger = log.createLogger(fmsg)
+
+        # validando o token
+        self.check_token(config, logger)
 
         # tratando os nomes a ser utilizado para o path e extensao
         ext = key.split('.')[-1].lower()
@@ -47,9 +56,9 @@ class CsvExcelExtractor(Extrator):
                 logger.error('chave csv ausente na configuracao yaml')
                 raise KeyError('chave csv ausente na configuracao yaml')
             header = csv_options.get('header')
-            encoding = csv_options('encoding', 'UTF-8')
-            sep = csv_options('sep', ',')
-            low_memory = csv_options('low_memory', False)
+            encoding = csv_options.get('encoding', 'UTF-8')
+            sep = csv_options.get('sep', ',')
+            low_memory = csv_options.get('low_memory', False)
             if not header:
                 logger.error('a chave header deve ser especificado')
                 raise KeyError('a chave header deve ser especificado')

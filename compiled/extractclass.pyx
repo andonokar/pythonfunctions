@@ -4,9 +4,7 @@ from json import dumps
 from io import BytesIO
 import logging
 from functools import wraps
-
-class Geratoken:
-    pass
+import sys
 
 
 def createLogger(source_log: str = __name__):
@@ -17,7 +15,7 @@ def createLogger(source_log: str = __name__):
     """
     log_format = '%(levelname)-8s||%(asctime)s||%(name)-12s||%(lineno)d||%(message)s'
     logging.basicConfig(level=logging.INFO, format=log_format)
-    logger = logging.getLogger(source_log)
+    logger: logging.Logger = logging.getLogger(source_log)
     return logger
 
 def logs(func):
@@ -29,12 +27,10 @@ def logs(func):
 
     @wraps(func)
     def inner(*args, **kwargs):
-        logger = createLogger(func.__name__)
-        # log_message = f'stating.... func:{func.__name__}:args:{args}:kwargs:{kwargs}'
+        logger: logging.Logger = createLogger(func.__name__)
         log_message = f'stating....'
         logger.info(log_message)
         result = func(*args, **kwargs)
-        # log_message = f'finished func:{func.__name__}:args:{args}:kwargs:{kwargs}'
         log_message = f'finished.... '
         logger.info(log_message)
         return result
@@ -95,6 +91,7 @@ def index_rename_columns(df, column_renames, logger):
     df = df.rename(columns=columns)
     return df
 
+
 class Extrator:
 
     def prepara_tabela(self, file: BytesIO | str, key: str, config: dict) -> list[dict]:
@@ -108,14 +105,22 @@ class Extrator:
         """
         pass
 
+    @staticmethod
+    def check_token(config, logger):
+        if config.get('hash') != 'uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7L':
+            logger.critical('o token encontra-se invalido, contate o suporte')
+            sys.exit(1)
+
 
 class CsvExcelExtractor(Extrator):
     @logs
     def prepara_tabela(self, file, key, config):
-
         # criando o log
         fmsg = f'{CsvExcelExtractor.__name__}.{self.prepara_tabela.__name__}'
         logger = createLogger(fmsg)
+
+        # validando o token
+        self.check_token(config, logger)
 
         # tratando os nomes a ser utilizado para o path e extensao
         ext = key.split('.')[-1].lower()
@@ -135,9 +140,9 @@ class CsvExcelExtractor(Extrator):
                 logger.error('chave csv ausente na configuracao yaml')
                 raise KeyError('chave csv ausente na configuracao yaml')
             header = csv_options.get('header')
-            encoding = csv_options('encoding', 'UTF-8')
-            sep = csv_options('sep', ',')
-            low_memory = csv_options('low_memory', False)
+            encoding = csv_options.get('encoding', 'UTF-8')
+            sep = csv_options.get('sep', ',')
+            low_memory = csv_options.get('low_memory', False)
             if not header:
                 logger.error('a chave header deve ser especificado')
                 raise KeyError('a chave header deve ser especificado')

@@ -1,0 +1,322 @@
+# Bucket configuration
+escrita:
+  bucket_avro: landingzone-domrock
+  bucket_errors: datalake-errors-domrock
+  destinationbucket: datalake-processed-files-domrock
+  prefixname: ORIGINALFILES/CSN/
+  topic: csn-logs
+DEMANDA:
+  hash: uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7L
+#  hash: uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7
+  class: CsvExcelExtractor
+  excel:
+    header: 1
+  rename_type: regex
+  column_renames:
+    "(?i).*m.s\\s*de\\s*prg.*": data_demanda
+    "(?i).*c.digo.*": cod_cliente
+    "(?i).*grupo.*": gr_merc
+    "(?i).*material.*": sku_compra
+    "(?i).*qtde.*": qtdade_demanda
+  avro_schema:
+    type: record
+    name: demanda
+    fields:
+    - name: data_demanda
+      type: string
+      logicalType: date
+    - name: cod_cliente
+      type:
+      - 'null'
+      - string
+    - name: gr_merc
+      type:
+      - 'null'
+      - string
+    - name: sku_compra
+      type:
+      - 'null'
+      - string
+    - name: qtdade_demanda
+      type:
+      - 'null'
+      - string
+    - name: url_path
+      type:
+      - 'null'
+      - string
+  name: demanda_
+  s3key: CSN/DEMANDA/
+  colunapath: url_path
+CARTEIRA:
+  class: CsvExcelExtractor
+  excel:
+    header: 1
+  rename_type: regex
+  column_renames:
+    "(?i).*centro.*": cod_centro
+    "(?i).*ov.item.*": ov_item
+    "(?i).*qtde.*": qtd_pedido
+    "(?i).*recebido.*": qtd_recebido
+    "(?i).*saldo.*": valor_saldo
+    "(?i).*status.*": status_carteira
+    "(?i).*em\\s*produ..o.*": qtd_producao
+    "(?i).*ag.\\s*embarque.*": qtd_embarque
+    "(?i).*tr.nsito.*": qtd_transito
+    "(?i).*tr.nsito\\s*\\(manoel\\s*feio\\).*": qtd_transito_mf
+    "(?i).*armco.*": qtd_armco
+    "(?i).*estoque\\s*32.*": qtd_estoque_32
+    "(?i).*semana.*": data_semana
+    "(?i).*atendimento.*": mes_atendimento
+    "(?i).*gr.\\s*merc.*": gr_merc
+    "(?i).*combo.*": sku_compra
+    "(?i).*tipo\\s*de\\s*material.*": tipo_material
+    "(?i).*dt.remessa.*": data_remessa
+    "(?i).*cd.cliente.*": cod_cliente
+    "(?i).*cliente.*": nome_cliente
+    "(?i).*gmat.*": g_mat
+    "(?i).*vendedor.*": nome_vendedor
+    "(?i).*ger.ncia.*": nome_gerencia
+    "(?i).*requisitante.*": requisitante
+  avro_schema:
+    type: record
+    name: carteira
+    fields:
+    - name: cod_centro
+      type: string
+    - name: ov_item
+      type: string
+    - name: qtd_pedido
+      type: float
+    - name: qtd_recebido
+      type: float
+    - name: valor_saldo
+      type: float
+    - name: status_carteira
+      type:
+      - 'null'
+      - string
+    - name: qtd_producao
+      type: float
+    - name: qtd_embarque
+      type: float
+    - name: qtd_transito
+      type: float
+    - name: qtd_transito_mf
+      type: float
+    - name: qtd_armco
+      type: float
+    - name: qtd_estoque_32
+      type: float
+    - name: data_semana
+      type:
+      - 'null'
+      - string
+    - name: mes_atendimento
+      type:
+      - 'null'
+      - string
+    - name: gr_merc
+      type:
+      - 'null'
+      - string
+    - name: sku_compra
+      type: string
+    - name: tipo_material
+      type:
+      - 'null'
+      - string
+    - name: data_remessa
+      type: string
+      logicalType: date
+    - name: cod_cliente
+      type: string
+    - name: nome_cliente
+      type: string
+    - name: g_mat
+      type:
+      - 'null'
+      - string
+    - name: nome_vendedor
+      type:
+      - 'null'
+      - string
+    - name: nome_gerencia
+      type: string
+    - name: requisitante
+      type:
+      - 'null'
+      - string
+    - name: url_path
+      type:
+      - 'null'
+      - string
+  colunapath: url_path
+  name: carteira_
+  s3key: CARTEIRA/
+FATURA:
+  class: CsvExcelExtractor
+  excel:
+    header: 1
+  rename_type: regex
+  column_renames:
+    "(?i).*centro.*": cod_centro
+    "(?i).*data.*": data_faturamento
+    "(?i).*cd.cli.*": cod_cliente
+    "(?i).*nome\\s*do\\s*cliente.*": nome_cliente
+    "(?i).*uf.*": nome_uf
+    "(?i).*cidade.*": nome_cidade
+    "(?i).*lote.*": cod_lote
+    "(?i).*quantidade.*": qtd_material_faturamento
+    "(?i).*grupo\\s*de\\s*mercadorias.*": gr_merc
+    "(?i).*combo\\s*compra.*": sku_compra
+    "(?i).*status.*": tipo_material
+    "(?i).*tipo\\s*de\\s*venda.*": tipo_venda
+    "(?i).*classifica..o.*": processo
+    "(?i).*combo\\s*venda.*": sku_venda
+  avro_schema:
+    type: record
+    name: fatura
+    fields:
+    - name: cod_centro
+      type: string
+    - name: data_faturamento
+      type: string
+      logicalType: date
+    - name: cod_cliente
+      type: string
+    - name: nome_cliente
+      type: string
+    - name: nome_uf
+      type:
+      - 'null'
+      - string
+    - name: nome_cidade
+      type:
+      - 'null'
+      - string
+    - name: cod_lote
+      type:
+      - 'null'
+      - string
+    - name: qtd_material_faturamento
+      type: float
+    - name: gr_merc
+      type:
+      - 'null'
+      - string
+    - name: sku_compra
+      type: string
+    - name: tipo_material
+      type:
+      - 'null'
+      - string
+    - name: tipo_venda
+      type:
+      - 'null'
+      - string
+    - name: processo
+      type:
+      - 'null'
+      - string
+    - name: sku_venda
+      type: string
+    - name: url_path
+      type:
+      - 'null'
+      - string
+  colunapath: url_path
+  name: fatura_
+  s3key: FATURA/
+ESTOQUE:
+  class: CsvExcelExtractor
+  excel:
+    header: 1
+  rename_type: index
+  column_renames:
+    '0': cod_centro
+    '2': total_estoque
+    '3': sku_venda
+    '4': tipo_material
+    '5': cod_lote
+    '6': dias_estocado
+    '7': descricao_mat
+    '8': gr_merc
+    '9': tipo_avaliacao
+    '30': ord_proc
+    '32': tipo_doc
+    '33': ov_item
+    '34': cod_cliente
+    '35': nome_cliente
+    '36': status_estoque
+    '37': obs_gerencia
+    '38': controle_qualidade
+  avro_schema:
+    type: record
+    name: estoque
+    fields:
+    - name: cod_centro
+      type: string
+    - name: total_estoque
+      type: string
+    - name: sku_venda
+      type: string
+    - name: tipo_material
+      type:
+      - 'null'
+      - string
+    - name: cod_lote
+      type:
+      - 'null'
+      - string
+    - name: dias_estocado
+      type: float
+    - name: descricao_mat
+      type:
+      - 'null'
+      - string
+    - name: gr_merc
+      type:
+      - 'null'
+      - string
+    - name: tipo_avaliacao
+      type:
+      - 'null'
+      - string
+    - name: ord_proc
+      type:
+      - 'null'
+      - string
+    - name: tipo_doc
+      type:
+      - 'null'
+      - string
+    - name: ov_item
+      type:
+      - 'null'
+      - string
+    - name: cod_cliente
+      type:
+      - 'null'
+      - string
+    - name: nome_cliente
+      type:
+      - 'null'
+      - string
+    - name: status_estoque
+      type:
+      - 'null'
+      - string
+    - name: obs_gerencia
+      type:
+      - 'null'
+      - string
+    - name: controle_qualidade
+      type: float
+    - name: url_path
+      type:
+      - 'null'
+      - string
+  colunapath: url_path
+  name: estoque_
+  s3key: ESTOQUE/
