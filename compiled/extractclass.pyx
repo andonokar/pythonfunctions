@@ -15,7 +15,7 @@ def createLogger(source_log: str = __name__):
     """
     log_format = '%(levelname)-8s||%(asctime)s||%(name)-12s||%(lineno)d||%(message)s'
     logging.basicConfig(level=logging.INFO, format=log_format)
-    logger: logging.Logger = logging.getLogger(source_log)
+    logger = logging.getLogger(source_log)
     return logger
 
 def logs(func):
@@ -27,7 +27,7 @@ def logs(func):
 
     @wraps(func)
     def inner(*args, **kwargs):
-        logger: logging.Logger = createLogger(func.__name__)
+        logger = createLogger(func.__name__)
         log_message = f'stating....'
         logger.info(log_message)
         result = func(*args, **kwargs)
@@ -241,4 +241,3 @@ class CsvExcelExtractor(Extrator):
                     "s3key": config['s3key']}]
         logger.info(f'extracao {key2} realizada com sucesso')
         return tabelas
-
