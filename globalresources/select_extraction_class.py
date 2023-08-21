@@ -1,5 +1,4 @@
-from compiled.extractclass import *
-from util import log
+from globalresources.extraction_classes import *
 
 
 class SelectClassExtraction:
