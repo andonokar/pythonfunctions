@@ -62,9 +62,8 @@ class Escrita:
                         mistake += 1
                 # fechando o writer
                 writer.close()
-                logger.info(f'Escrita no Avro realizada com sucesso! linhas escritas:{sucess}'
+                logger.info(f'Escrita no Avro realizada com su cesso! linhas escritas:{sucess}'
                             f'  linhas recusadas:{mistake}')
-
                 now = datetime.now()
                 date_str = now.strftime('%Y-%m-%d')
                 time_str = now.strftime('%H-%M')
