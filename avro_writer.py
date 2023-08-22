@@ -46,8 +46,6 @@ class Escrita:
                         # executando a tipagem e validacoes basicas(eg: not null)
                         dic_avro = {i:
                                     None if row[i] is None else
-                                    # datetime.strptime(row[i], '%Y-%m-%d').date().isoformat() if 'date' in j else
-                                    # datetime.strptime(row[i], '%Y-%m-%d %H:%M:%S.%f').date().isoformat() if "timestamp-millis" in j else
                                     int(float(row[i])) if 'int' in j else
                                     float(row[i]) if 'float' in j else
                                     row[i] if 'boolean' in j else
