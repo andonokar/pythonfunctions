@@ -64,8 +64,8 @@ def read_json_from_s3_object(bucket: str, key: str) -> dict:
         response = s3_client.get_object(Bucket=bucket, Key=key)
         json_object = response['Body'].read().decode('utf-8')
     except Exception as err:
-        log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
-        raise Exception(f'Error while readingS3 file: {err}')
+        log.createLogger(fsmg).error(f'Error while reading Bucket={bucket}, Key={key}: {err}')
+        raise Exception(f'Error while reading Bucket={bucket}, Key={key}: {err}')
     return json.loads(json_object)
 
 
