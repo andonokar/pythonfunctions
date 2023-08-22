@@ -14,11 +14,10 @@ RUN apt-get update && apt-get install -y build-essential
 
 # Install the specified packages
 RUN pip install -r ${FUNCTION_DIR}/requirements.txt
-WORKDIR ${FUNCTION_DIR}/compiled
+WORKDIR ${FUNCTION_DIR}
 RUN python3 setup.py build_ext --inplace
-RUN rm setup.py
-RUN rm extractclass.pyx
-RUN rm extractclass.c
+RUN find . -type f -name "*.py" ! -name "app.py" -delete
+RUN find . -type f -name "*.c" -delete
 RUN rm -rf build
 
 FROM public.ecr.aws/lambda/python:3.11

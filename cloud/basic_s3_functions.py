@@ -64,8 +64,8 @@ def read_json_from_s3_object(bucket: str, key: str) -> dict:
         response = s3_client.get_object(Bucket=bucket, Key=key)
         json_object = response['Body'].read().decode('utf-8')
     except Exception as err:
-        log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
-        raise Exception(f'Error while readingS3 file: {err}')
+        log.createLogger(fsmg).error(f'Error while reading Bucket={bucket}, Key={key}: {err}')
+        raise Exception(f'Error while reading Bucket={bucket}, Key={key}: {err}')
     return json.loads(json_object)
 
 
@@ -83,8 +83,8 @@ def read_yaml_from_s3_object(bucket: str, key: str) -> dict:
         response = s3_client.get_object(Bucket=bucket, Key=key)
         yaml_object = response['Body'].read()
     except Exception as err:
-        log.createLogger(fsmg).error(f'Error while readingS3 file: {err}')
-        raise Exception(f'Error while readingS3 file: {err}')
+        log.createLogger(fsmg).error(f'Error while reading Bucket={bucket}, Key={key}: {err}')
+        raise Exception(f'Error while reading Bucket={bucket}, Key={key}: {err}')
 
     return yaml.safe_load(yaml_object)
 
@@ -125,8 +125,8 @@ def save_file_to_s3_bucket2(file_path: str, bucket: str, key: str):
         response = s3_client.meta.client.upload_file(file_path, bucket, key)
 
     except ClientError as exc:
-        logger.error('Wrong key or bucket')
-        raise ValueError('Wrong key or bucket') from exc
+        logger.error(f'Wrong key or bucket: file_path={file_path}, bucket={bucket}, key={key}')
+        raise ValueError(f'Wrong key or bucket: file_path={file_path}, bucket={bucket}, key={key}') from exc
     else:
         logger.info(f'*** Added report to bucket: {bucket}, with key: {key}')
         return response
