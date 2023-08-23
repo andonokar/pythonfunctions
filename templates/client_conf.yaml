@@ -7,7 +7,7 @@ escrita:
   topic: csn-logs # the topic to write the logs in kafka
 
 # Extraction folder from the client bucket
-DEMANDA: # Name must be exactly as the folder of the file
+DEMANDA: # Name must be exactly as the folder of the file | Case sensitive
   class: CsvExcelExtractor # Optional, if empty, return default CsvExcelExtractor
   csv: # If extracting csv files, the header is MANDATORY, otherwise will throw exception
     header: 0 # MANDATORY, The line which becomes the column names
