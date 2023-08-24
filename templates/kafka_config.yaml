@@ -4,6 +4,8 @@ producer_config:
   enable.idempotence: 'true'
   acks: all
   linger.ms: 100
+schema_registry:
+  url: http://schema-registry:8081
 avro_log_schema:
   type: record
   name: User
