@@ -10,21 +10,19 @@ import json
 from datetime import datetime
 from variables import kafka_config
 
-producer = Producer(kafka_config.get('producer_config'))
-
-avro_schema_str = json.dumps(kafka_config.get('avro_log_schema'))
-
-schema_registry_conf = {'url': 'http://schema-registry:8081'}
-schema_registry_client = SchemaRegistryClient(schema_registry_conf)
-avro_serializer = AvroSerializer(schema_registry_client, avro_schema_str)
-
 
 def createloggerforkafka(source_log: str = __name__, topic: str = 'logs', **kwargs):
     """
     Função para criar um ponto de observação através do uso de logs e enviar ao kafka
     :return:
     """
-    data = kwargs
+    producer = Producer(kafka_config.get('producer_config'))
+
+    avro_schema_str = json.dumps(kafka_config.get('avro_log_schema'))
+
+    schema_registry_conf = kafka_config.get('schema_registry')
+    schema_registry_client = SchemaRegistryClient(schema_registry_conf)
+    avro_serializer = AvroSerializer(schema_registry_client, avro_schema_str)
     log_format = '%(levelname)-8s||%(asctime)s||%(name)-12s||%(lineno)d||%(message)s'
     logging.basicConfig(level=logging.INFO, format=log_format)
     logger = logging.getLogger(source_log)
@@ -36,6 +34,7 @@ def createloggerforkafka(source_log: str = __name__, topic: str = 'logs', **kwar
             "mensagem": record.getMessage(),
             "log_mensagem": record.levelname
         }
+        message_payload = {**message_payload, **kwargs}
         producer.produce(topic=topic, value=avro_serializer(message_payload, SerializationContext(topic, MessageField.VALUE)))
         producer.flush()
 
