@@ -1,11 +1,11 @@
 producer_config:
   client.id: client-id
-  bootstrap.servers: my-cluster-kafka-bootstrap:9092
+  bootstrap.servers: 44.213.115.90:9092
   enable.idempotence: 'true'
   acks: all
   linger.ms: 100
 schema_registry:
-  url: http://schema-registry:8081
+  url: http://44.213.115.90:8081
 avro_log_schema:
   type: record
   name: User

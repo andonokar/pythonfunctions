@@ -31,8 +31,7 @@ def read_and_redirect(bucket, file, key):
                 'S3_fim': escrita_conf["bucket_errors"],
                 'etapa': 'landing-zone'
             }
-            logger = createloggerforkafka(read_and_redirect.__name__, topic=escrita_conf["topic"], **log_args)
-            logger.error(str(err))
+            createloggerforkafka(str(err), 'error', topic=escrita_conf["topic"], **log_args)
         move_file_s3(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
         raise Exception(str(err))
     else:
@@ -43,6 +42,5 @@ def read_and_redirect(bucket, file, key):
                 'S3_fim': escrita_conf["destinationbucket"],
                 'etapa': 'landing-zone'
             }
-            logger = createloggerforkafka(read_and_redirect.__name__, topic=escrita_conf["topic"], **log_args)
-            logger.info('processado ok')
+            createloggerforkafka('processado ok', 'info', topic=escrita_conf["topic"], **log_args)
         move_file_s3(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
