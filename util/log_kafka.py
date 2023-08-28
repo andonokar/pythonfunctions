@@ -29,6 +29,3 @@ def createloggerforkafka(message, level, topic, **kwargs):
     message_payload = {**message_payload, **kwargs}
     producer.produce(topic=topic, value=avro_serializer(message_payload, SerializationContext(topic, MessageField.VALUE)))
     producer.flush()
-
-
-createloggerforkafka('aiaiaiaiai', 'error', 'esse-topico-criado')
