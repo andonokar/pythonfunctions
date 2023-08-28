@@ -29,6 +29,7 @@ class Escrita:
         # abrindo o writer
         fmsg = f'{Escrita.__name__}.{self.escreve.__name__}'
         logger = log.createLogger(fmsg)
+        mistakes = []
         for data in self.tables:
             if len(data['df'].index) != 0:
                 avropath = f"/tmp/{data['name']}.avro"
@@ -83,5 +84,7 @@ class Escrita:
                         logger.info(f'csv escrito com sucesso!')
                     save_file_to_s3_bucket2(csvpath, self.bucketerrors, f'{data["s3key"]}{show}_{data["name"]}.csv')
                 save_file_to_s3_bucket2(avropath, self.bucket, f'{data["s3key"]}{show}_{data["name"]}.avro')
+                mistakes.append(mistake)
             else:
                 logger.info(f'{data["name"]} sem linhas para gerar um avro')
+        return mistakes
