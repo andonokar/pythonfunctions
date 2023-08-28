@@ -29,7 +29,7 @@ def read_and_redirect(bucket, file, key):
         tables = CriaDataFrame(extrator, file, key, file_conf).extrair_para_avro()
         logger.warning('extraction ok')
         writer = Escrita(tables, escrita_conf)
-        writer.escreve()
+        mistakes = writer.escreve()
         logger.warning('avro ok')
     except Exception as err:
         if escrita_conf.get('topic'):
@@ -43,7 +43,7 @@ def read_and_redirect(bucket, file, key):
             createloggerforkafka(str(err), 'error', topic=escrita_conf["topic"], **log_args)
             logger.warning('sucess kafka')
         move_file_s3(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
-        logger.warning('file moved')
+        logger.warning('file moved with error')
         raise Exception(str(err))
     else:
         if escrita_conf.get('topic'):
@@ -54,7 +54,11 @@ def read_and_redirect(bucket, file, key):
                 'etapa': 'landing-zone'
             }
             logger.warning('trying kafka')
-            createloggerforkafka('processado ok', 'info', topic=escrita_conf["topic"], **log_args)
+            if len(mistakes) == 0:
+                createloggerforkafka('processado ok', 'info', topic=escrita_conf["topic"], **log_args)
+            else:
+                createloggerforkafka(f'processado com {mistakes} erros, conferir o bucket de erros', 'warning', topic=escrita_conf["topic"], **log_args)
+                logger.warning(f'{mistakes} erros gerando avro')
             logger.warning('sucess kafka')
         move_file_s3(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
-        logger.warning('file moved')
+        logger.warning('file moved with sucess')
