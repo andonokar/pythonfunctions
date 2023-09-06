@@ -4,10 +4,10 @@ escrita:
   bucket_errors: datalake-errors-933447815926 # Error files
   destinationbucket: datalake-processed-files-933447815926 # files successfully processed
   prefixname: ORIGINALFILES/CSN/ # the first folder in where to put them
-  topic: csn-logs # the topic to write the logs in kafka
+  topic: csn-logs # optional, the topic to write the logs in kafka, use this key only if you need kafka
 
 # Extraction folder from the client bucket
-DEMANDA:
+DEMANDA: # Name must be exactly as the folder of the file | Case sensitive
   class: CsvExcelExtractor # Optional, if empty, return default CsvExcelExtractor
   csv: # If extracting csv files, the header is MANDATORY, otherwise will throw exception
     header: 0 # MANDATORY, The line which becomes the column names

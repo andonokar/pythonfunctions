@@ -59,7 +59,7 @@ class CsvExcelExtractor(Extrator):
             encoding = csv_options.get('encoding', 'UTF-8')
             sep = csv_options.get('sep', ',')
             low_memory = csv_options.get('low_memory', False)
-            if not header:
+            if header is None:
                 logger.error('a chave header deve ser especificado')
                 raise KeyError('a chave header deve ser especificado')
             dataframe = pd.read_csv(file, header=header, encoding=encoding, sep=sep, low_memory=low_memory)
@@ -72,7 +72,7 @@ class CsvExcelExtractor(Extrator):
                 logger.error('chave excel ausente na configuracao yaml')
                 raise KeyError('chave excel ausente na configuracao yaml')
             header = excel_options.get('header')
-            if not header:
+            if header is None:
                 logger.error('a chave header deve ser especificado')
                 raise KeyError('a chave header deve ser especificado')
             dataframe = pd.read_excel(file, header=header)

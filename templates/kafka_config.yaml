@@ -1,10 +1,12 @@
-producer_config:
-  client.id: client-id
-  bootstrap.servers: my-cluster-kafka-bootstrap:9092
-  enable.idempotence: 'true'
-  acks: all
-  linger.ms: 100
-avro_log_schema:
+producer_config: # configuration for the confluent Producer
+  client.id: client-id # Set this any name
+  bootstrap.servers: 44.213.115.90:9092 # kafka ip address and port
+  enable.idempotence: 'true' # set this 'true'
+  acks: all # 'set this all to guarantee response'
+  linger.ms: 100 # delay for messages, 100ms is a good
+schema_registry: # configuration for the schema registry
+  url: http://44.213.115.90:8081 # ip and port for schema registry(http protocol)
+avro_log_schema: # default schema for kafka messaging
   type: record
   name: User
   fields:

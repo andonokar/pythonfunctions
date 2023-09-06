@@ -1,3 +1,6 @@
-test-prada-files:
+test-prada-files: # the bucket where the client files are deposited(for lambda trigger)
+  bucket: test-conf-domrock # the bucket where the configuration file for the client is
+  key: csn.yaml # the file key inside the bucket(has to be yaml format)
+sftp-telecom-test:
   bucket: test-conf-domrock
-  key: csn.yaml
+  key: telecom.yaml

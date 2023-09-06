@@ -29,6 +29,7 @@ class Escrita:
         # abrindo o writer
         fmsg = f'{Escrita.__name__}.{self.escreve.__name__}'
         logger = log.createLogger(fmsg)
+        mistakes = []
         for data in self.tables:
             if len(data['df'].index) != 0:
                 avropath = f"/tmp/{data['name']}.avro"
@@ -46,8 +47,6 @@ class Escrita:
                         # executando a tipagem e validacoes basicas(eg: not null)
                         dic_avro = {i:
                                     None if row[i] is None else
-                                    # datetime.strptime(row[i], '%Y-%m-%d').date().isoformat() if 'date' in j else
-                                    # datetime.strptime(row[i], '%Y-%m-%d %H:%M:%S.%f').date().isoformat() if "timestamp-millis" in j else
                                     int(float(row[i])) if 'int' in j else
                                     float(row[i]) if 'float' in j else
                                     row[i] if 'boolean' in j else
@@ -64,9 +63,8 @@ class Escrita:
                         mistake += 1
                 # fechando o writer
                 writer.close()
-                logger.info(f'Escrita no Avro realizada com sucesso! linhas escritas:{sucess}'
+                logger.info(f'Escrita no Avro realizada com su cesso! linhas escritas:{sucess}'
                             f'  linhas recusadas:{mistake}')
-
                 now = datetime.now()
                 date_str = now.strftime('%Y-%m-%d')
                 time_str = now.strftime('%H-%M')
@@ -86,5 +84,7 @@ class Escrita:
                         logger.info(f'csv escrito com sucesso!')
                     save_file_to_s3_bucket2(csvpath, self.bucketerrors, f'{data["s3key"]}{show}_{data["name"]}.csv')
                 save_file_to_s3_bucket2(avropath, self.bucket, f'{data["s3key"]}{show}_{data["name"]}.avro')
+                mistakes.append(mistake)
             else:
                 logger.info(f'{data["name"]} sem linhas para gerar um avro')
+        return mistakes
