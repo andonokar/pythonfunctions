@@ -5,9 +5,10 @@ from globalresources.select_extraction_class import SelectClassExtraction
 from cloud.basic_s3_functions import move_file_s3
 from util.log_kafka import createloggerforkafka
 from util import log
+from io import BytesIO
 
 
-def read_and_redirect(bucket, file, key):
+def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
     """
     Funcional principal a ser executada pelo lambda
     Le o cliente, redireciona para o extrator certo, extrai o arquivo, gera o avro, salva na landing zone
@@ -17,7 +18,7 @@ def read_and_redirect(bucket, file, key):
     :param key: o caminho do arquivo no s3
     :return:
     """
-    fmsg = f'{read_and_redirect.__name__}'
+    fmsg = f'{bucket}/{key}'
     logger = log.createLogger(fmsg)
     client = Client(bucket, key)
     logger.warning('client ok')
@@ -44,6 +45,7 @@ def read_and_redirect(bucket, file, key):
             logger.warning('sucess kafka')
         move_file_s3(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
         logger.warning('file moved with error')
+        logger.error(str(err))
         raise Exception(str(err))
     else:
         if escrita_conf.get('topic'):
