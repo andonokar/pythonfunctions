@@ -1,3 +1,5 @@
-token_generator/
-templates/
-csn/
+token_generator
+templates
+csn
+.idea
+.git
