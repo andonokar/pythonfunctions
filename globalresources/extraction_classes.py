@@ -28,7 +28,6 @@ class CsvExcelExtractor(Extrator):
         # validando o token
         config = processdf.config
         key2 = processdf.name
-        self.check_token(config)
         avrsch_config = processdf.set_avro_schema()
         header_config = {i['name']: i['logicalType'] if 'logicalType' in i.keys() else
                          i['type'] for i in config['avro_schema']['fields']}
