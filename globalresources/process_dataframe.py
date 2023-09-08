@@ -47,14 +47,15 @@ def read_dataframe(file: str | BytesIO, key: str, config: dict):
     else:
         raise NotImplementedError(f"{key2} o arquivo nao e csv/excel")
 
-    return ProcessDataFrame(df, config)
+    return ProcessDataFrame(df, config, key2)
 
 
 class ProcessDataFrame:
-    def __init__(self, df: pd.DataFrame, config: dict):
+    def __init__(self, df: pd.DataFrame, config: dict, name: str):
         self.df = df
         self.config = config
         self.avro_schema = None
+        self.name = name
 
     def _rename_columns(self, column_renames: dict):
         self.df = self.df.rename(columns=column_renames)
@@ -88,6 +89,7 @@ class ProcessDataFrame:
             if not rename_function:
                 raise NotImplementedError(f'o metodo {rename_type} para renomear colunas nao existe')
             rename_function(column_renames)
+            return self.df
 
     def set_avro_schema(self):
         try:
@@ -95,3 +97,4 @@ class ProcessDataFrame:
         except Exception as err:
             raise Exception(f'Schema invalido para o avro: {err}')
         self.avro_schema = avrsch_config
+        return self.avro_schema
