@@ -1,5 +1,5 @@
 from globalresources.criadataframe import CriaDataFrame
-from avro_writer import Escrita
+from fastavro_writer import Escrita
 from globalresources.reader_client import Client
 from globalresources.select_extraction_class import SelectClassExtraction
 from cloud.basic_s3_functions import move_file_s3
@@ -48,7 +48,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
         move_file_s3(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
         logger.warning('file moved with error')
         logger.critical(str(err))
-        raise Exception(str(err))
+        raise err
     else:
         if escrita_conf.get('topic'):
             log_args = {
