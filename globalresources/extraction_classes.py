@@ -57,6 +57,7 @@ class CsvExcelExtractor(Extrator):
         for float_column in floatconversion_df:
             if 'float' not in str(df[float_column].dtype).lower():
                 df[float_column] = df[float_column].apply(convert_decimal)
+                df[float_column].astype(float)
 
         for float_int_column in preencher:
             if float_int_column not in df.columns:
