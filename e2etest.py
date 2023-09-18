@@ -11,3 +11,4 @@ for key in file_array:
     file = read_file_from_s3_object(bucket, key)
     buffer = BytesIO(file)
     read_and_redirect(bucket, buffer, key)
+    break
