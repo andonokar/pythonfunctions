@@ -1,4 +1,4 @@
-def convert_boolean(val):
+def convert_boolean(val) -> bool | None:
     """
     Trata os decimais no caso de não estarem formatados corretamente
     """
@@ -10,7 +10,7 @@ def convert_boolean(val):
     return None
 
 
-def convert_decimal(val):
+def convert_decimal(val) -> float:
     """
     Trata os decimais no caso de não estarem como float
     """

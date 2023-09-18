@@ -1,4 +1,4 @@
-from globalresources.criadataframe import CriaDataFrame
+from globalresources.criadataframe import StrategyExtractor
 from fastavro_writer import Escrita
 from globalresources.reader_client import Client
 from globalresources.select_extraction_class import SelectClassExtraction
@@ -29,7 +29,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
     logger.warning('class ok')
     try:
         processdf = read_dataframe(file, key, file_conf)
-        tables = CriaDataFrame(extrator, processdf).extrair_para_avro()
+        tables = StrategyExtractor(extrator, processdf).extrair_para_avro()
         logger.warning('extraction ok')
         writer = Escrita(tables, escrita_conf)
         mistakes = writer.escreve()
