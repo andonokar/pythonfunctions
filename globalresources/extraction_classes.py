@@ -3,10 +3,24 @@ from util import log
 from globalresources.basic_extract_functions import (
     convert_boolean, convert_decimal)
 from globalresources.process_dataframe import ProcessDataFrame
+from abc import ABC, abstractmethod
+from functools import wraps
 
 
-class Extrator:
+def check_token(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        # DO SOMETHING FOR API CHECK
+        # if config.get('hash') != 'uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7L':
+        #     raise ConnectionRefusedError('o token encontra-se invalido, contate o suporte')
+        result = func(*args, **kwargs)
+        return result
+    return inner
 
+
+class Extrator(ABC):
+
+    @abstractmethod
     def prepara_tabela(self, processdf: ProcessDataFrame) -> list[dict]:
         """
         Realiza todo o processo de extracao e tratamento/enriquecimentos basicos e fica pronta pra ter o schema
@@ -16,13 +30,9 @@ class Extrator:
         """
         pass
 
-    @staticmethod
-    def check_token(config):
-        if config.get('hash') != 'uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7L':
-            raise ConnectionRefusedError('o token encontra-se invalido, contate o suporte')
-
 
 class CsvExcelExtractor(Extrator):
+    @check_token
     @log.logs
     def prepara_tabela(self, processdf: ProcessDataFrame):
         # validando o token
