@@ -6,7 +6,7 @@ from cloud.basic_s3_functions import move_file_s3
 from util.log_kafka import createloggerforkafka
 from util import log
 from io import BytesIO
-from globalresources.process_dataframe import read_dataframe
+from globalresources.dataframe_reader import read_dataframe
 
 
 def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
