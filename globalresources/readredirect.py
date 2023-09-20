@@ -1,5 +1,5 @@
 from globalresources.criadataframe import StrategyExtractor
-from fastavro_writer import Escrita
+from side_ideas.fastavro_writer import Escrita
 from globalresources.reader_client import Client
 from globalresources.select_extraction_class import SelectClassExtraction
 from cloud.basic_s3_functions import move_file_s3

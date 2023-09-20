@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from globalresources.process_dataframe import ProcessDataFrame
+from datetime import datetime, timedelta
 _data = {
     'int_column': np.random.randint(1, 100, size=10),
     'date_column': pd.date_range(start='2023-01-01', periods=10, freq='D'),
@@ -138,3 +139,35 @@ avro_config = {
     'bucket_avro': 'teste',
     'bucket_errors': 'teste_erro'
 }
+
+
+# def generate_random_data(schema, num_records):
+#     dicionario = {}
+#     for field in schema["fields"]:
+#         field_name = field["name"]
+#         field_type = field["type"]
+#         if field_type == "int":
+#             dicionario[field_name] = np.random.randint(1, 100, size=num_records)
+#         elif field_type == "string":
+#             if "logicalType" in field and field["logicalType"] == "date":
+#                 start_date = datetime(2023, 1, 1)
+#                 end_date = datetime(2023, 12, 31)
+#                 date_range = [start_date + timedelta(days=np.random.randint((end_date - start_date).days)) for _ in range(num_records)]
+#                 dicionario[field_name] = [date.strftime("%Y-%m-%d") for date in date_range]
+#             elif "logicalType" in field and field["logicalType"] == "timestamp-millis":
+#                 dicionario[field_name] = [datetime(2023, 9, 18) + timedelta(minutes=np.random.randint(1440)) for _ in range(num_records)]
+#             else:
+#                 dicionario[field_name] = [chr(65 + np.random.randint(26)) for _ in range(num_records)]
+#         elif field_type == "float":
+#             dicionario[field_name] = np.random.rand(num_records)
+#         elif field_type == "boolean":
+#             dicionario[field_name] = [bool(np.random.randint(2)) for _ in range(num_records)]
+#     return dicionario
+#
+#
+# # Generate a DataFrame with a million records
+# num_record = 10000
+# data = generate_random_data(_original_schema, num_record)
+# df_million = pd.DataFrame(data)
+# pdf_million = ProcessDataFrame(df_million, config=_configs_normal, name='test')
+
