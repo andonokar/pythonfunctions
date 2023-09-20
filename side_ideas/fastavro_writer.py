@@ -7,6 +7,11 @@ from globalresources.treated_dataframe import TreatedDataFrame
 from util import log
 from tests.variables_test import _avro_schema
 
+"""
+MOVED TO SIDE PROJECT BECAUSE IF ITERATE LINES GET LESS PERFORMANCE AND IF WRITE COMPLETE LIST WRITES FASTER BUT LOSES
+AUDITABILITY FOR EACH REGISTER
+"""
+
 
 class Escrita:
 
