@@ -5,6 +5,7 @@ from globalresources.basic_extract_functions import (
 from globalresources.process_dataframe import ProcessDataFrame
 from abc import ABC, abstractmethod
 from functools import wraps
+from globalresources.treated_dataframe import TreatedDataFrame
 
 
 def check_token(func):
@@ -20,7 +21,7 @@ def check_token(func):
 
 class Extrator(ABC):
     @abstractmethod
-    def prepara_tabela(self, processdf: ProcessDataFrame) -> list[dict]:
+    def prepara_tabela(self, processdf: ProcessDataFrame) -> list[TreatedDataFrame]:
         """
         Realiza todo o processo de extracao e tratamento/enriquecimentos basicos e fica pronta pra ter o schema
         testado para geracao do avro
@@ -40,6 +41,7 @@ class CsvExcelExtractor(Extrator):
         floatconversion = [i for i, j in header_config.items() if 'float' in j]
         floatconversion_df = list(df.columns.intersection(floatconversion))
         int_repasse = [i for i, j in header_config.items() if 'int' in j]
+        int_conversion_df = list(df.columns.intersection(int_repasse))
         preencher = floatconversion + int_repasse
         column_dates = [i for i, j in header_config.items() if 'date' in j]
         column_dates_df = list(df.columns.intersection(column_dates))
@@ -55,7 +57,12 @@ class CsvExcelExtractor(Extrator):
         for float_column in floatconversion_df:
             if 'float' not in str(df[float_column].dtype).lower():
                 df[float_column] = df[float_column].apply(convert_decimal)
-                df[float_column].astype(float)
+                df[float_column] = df[float_column].astype(float)
+
+        for int_column in int_conversion_df:
+            if 'int' not in str(df[int_column].dtype).lower():
+                df[int_column] = df[int_column].astype(float)
+                df[int_column] = df[int_column].astype('Int64')
 
         for float_int_column in preencher:
             if float_int_column not in df.columns:
@@ -78,7 +85,7 @@ class CsvExcelExtractor(Extrator):
 
     @check_token
     @log.logs
-    def prepara_tabela(self, processdf: ProcessDataFrame) -> list[dict]:
+    def prepara_tabela(self, processdf: ProcessDataFrame) -> list[TreatedDataFrame]:
         # validando o token
         config = processdf.config
         key2 = processdf.name
@@ -94,7 +101,5 @@ class CsvExcelExtractor(Extrator):
 
         df = self._treat_types(df, header_config)
         # criando o dicionario de retorno em que o programa ira trabalhar
-        tabelas = [{"name": f"{config['name']}{key2.split('.')[0]}", "df": df,
-                    "schema": avrsch_config, "header": header_config,
-                    "s3key": config['s3key']}]
+        tabelas = [TreatedDataFrame(f"{config['name']}{key2.split('.')[0]}", df, avrsch_config, header_config, config['s3key'])]
         return tabelas

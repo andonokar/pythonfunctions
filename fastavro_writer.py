@@ -20,6 +20,8 @@ class Escrita:
         self.bucket = conf['bucket_avro']
         self.bucketerrors = conf['bucket_errors']
 
+
+
     @log.logs
     def escreve(self):
         """
