@@ -1,4 +1,9 @@
-from globalresources.process_dataframe import ProcessDataFrame
+from globalresources.treated_dataframe import TreatedDataFrame
+from typing import Protocol
+
+
+class ProcessDataFrame(Protocol):
+    pass
 
 
 class StrategyExtractor:
@@ -9,6 +14,6 @@ class StrategyExtractor:
         self.extrator = extrator
         self.processdf = processdf
 
-    def extrair_para_avro(self) -> list[dict]:
+    def extrair_para_avro(self) -> list[TreatedDataFrame]:
         tabelas = self.extrator().prepara_tabela(self.processdf)
         return tabelas
