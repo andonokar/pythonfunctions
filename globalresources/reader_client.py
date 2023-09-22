@@ -8,7 +8,7 @@ class Client:
         self.bucket = bucket
         self.key = key
 
-    def _validate_depara_config(self, depara_config):
+    def _validate_depara_config(self, depara_config: dict):
         # Getting the configuration based on the bucket
         extraction_config = depara_config.get(self.bucket)
         # Checking if the configuration exists
