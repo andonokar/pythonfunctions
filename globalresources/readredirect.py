@@ -7,10 +7,9 @@ from util.log_kafka import createloggerforkafka
 from util import log
 from io import BytesIO
 from globalresources.dataframe_reader import read_dataframe
-from variables import depara_config
 
 
-def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
+def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config: dict) -> None:
     """
     Funcional principal a ser executada pelo lambda
     Le o cliente, redireciona para o extrator certo, extrai o arquivo, gera o avro, salva na landing zone
@@ -18,6 +17,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
     :param bucket: o bucket de onde veio o arquivo do s3
     :param file: o arquivo do s3 em bytes
     :param key: o caminho do arquivo no s3
+    :param depara_config: dicionario onde aponta as configuracoes do cliente
     :return:
     """
     fmsg = f'{bucket}/{key}'

@@ -1,6 +1,7 @@
 import io
 from globalresources.readredirect import read_and_redirect
 from cloud.basic_s3_functions import read_file_from_s3_object
+from variables import depara_config
 
 
 def handler(event, context):
@@ -9,4 +10,4 @@ def handler(event, context):
     print(f'{bucket}/{key}')
     file = read_file_from_s3_object(bucket, key)
     buffer = io.BytesIO(file)
-    read_and_redirect(bucket, buffer, key)
+    read_and_redirect(bucket, buffer, key, depara_config)
