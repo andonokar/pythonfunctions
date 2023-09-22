@@ -55,7 +55,7 @@ class Client:
         return escrita_conf
 
     @log.logs
-    def get_conf(self, depara_config):
+    def get_conf(self, depara_config: dict):
         """
         Le as configuracoes para a extracao
         :return: a tabela extraida pela classe
