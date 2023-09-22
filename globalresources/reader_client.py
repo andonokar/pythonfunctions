@@ -17,7 +17,7 @@ class Client:
             raise NotImplementedError(f'Nenhum Cliente configurado para o bucket {self.bucket}')
         return extraction_config
 
-    def _read_client_conf(self, extraction_config):
+    def _read_client_conf(self, extraction_config: dict):
         conf_bucket = extraction_config.get('bucket')
         conf_key = extraction_config.get('key')
         if not (conf_bucket and conf_key):
@@ -27,7 +27,7 @@ class Client:
         client_yaml = read_yaml_from_s3_object(conf_bucket, conf_key)
         return client_yaml
 
-    def _validade_folder_conf(self, client_yaml):
+    def _validade_folder_conf(self, client_yaml: dict):
         # Getting the folder for extraction
         folder = self.key.split("/")[0]
         file_conf = client_yaml.get(folder)
@@ -37,7 +37,7 @@ class Client:
         return file_conf
 
     @staticmethod
-    def _validate_escrita_conf(client_yaml):
+    def _validate_escrita_conf(client_yaml: dict):
         # Getting the write configuration
         escrita_conf = client_yaml.get('escrita')
         # Checking if the write configuration exists
