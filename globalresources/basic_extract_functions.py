@@ -10,13 +10,13 @@ def convert_boolean(val) -> bool | None:
     return None
 
 
-def convert_decimal(val) -> float:
+def convert_decimal(val: any) -> float:
     """
     Trata os decimais no caso de não estarem como float
     """
     if not val:
         return 0
-    if ',' in str(val):
+    if isinstance(val, str):
         try:
             return float(str(val).replace('.', '').replace(',', '.'))
         except ValueError:
