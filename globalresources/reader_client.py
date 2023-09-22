@@ -1,5 +1,4 @@
 from util import log
-from variables import depara_config
 from cloud.basic_s3_functions import read_yaml_from_s3_object
 
 
@@ -9,7 +8,7 @@ class Client:
         self.bucket = bucket
         self.key = key
 
-    def _validate_depara_config(self):
+    def _validate_depara_config(self, depara_config):
         # Getting the configuration based on the bucket
         extraction_config = depara_config.get(self.bucket)
         # Checking if the configuration exists
@@ -56,12 +55,12 @@ class Client:
         return escrita_conf
 
     @log.logs
-    def get_conf(self):
+    def get_conf(self, depara_config):
         """
         Le as configuracoes para a extracao
         :return: a tabela extraida pela classe
         """
-        extraction_config = self._validate_depara_config()
+        extraction_config = self._validate_depara_config(depara_config)
         client_yaml = self._read_client_conf(extraction_config)
         file_conf = self._validade_folder_conf(client_yaml)
         escrita_conf = self._validate_escrita_conf(client_yaml)

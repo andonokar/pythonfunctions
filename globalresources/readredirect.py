@@ -7,6 +7,7 @@ from util.log_kafka import createloggerforkafka
 from util import log
 from io import BytesIO
 from globalresources.dataframe_reader import read_dataframe
+from variables import depara_config
 
 
 def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
@@ -23,7 +24,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str) -> None:
     logger = log.createLogger(fmsg)
     client = Client(bucket, key)
     logger.warning('client ok')
-    escrita_conf, file_conf = client.get_conf()
+    escrita_conf, file_conf = client.get_conf(depara_config)
     logger.warning('conf ok')
     extrator = SelectClassExtraction(file_conf).get_class()
     logger.warning('class ok')
