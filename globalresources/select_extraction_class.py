@@ -6,16 +6,13 @@ class SelectClassExtraction:
         'CsvExcelExtractor': extc.CsvExcelExtractor
     }
 
-    def __init__(self, conf: dict):
-        self.conf = conf
-
-    def get_class(self):
+    def get_class(self, conf: dict):
         """
         Redireciona o arquivo lido a classe certa para realizar a extracao
         :return: a tabela extraida pela classe
         """
         # Getting the extractor class
-        extraction_class = self.conf.get('class', 'CsvExcelExtractor')
+        extraction_class = conf.get('class', 'CsvExcelExtractor')
         check_class = self.depara.get(extraction_class)
         # Checking if the class exists
         if not check_class or not isinstance(check_class, type):

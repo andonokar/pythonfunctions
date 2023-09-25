@@ -32,7 +32,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
     print('client ok')
     escrita_conf, file_conf = client.get_conf(config, yaml_reader)
     print('conf ok')
-    extrator = SelectClassExtraction(file_conf).get_class()
+    extrator = SelectClassExtraction().get_class(file_conf)
     print('class ok')
     try:
         processdf = read_dataframe(file, key, file_conf)
