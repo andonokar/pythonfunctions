@@ -1,0 +1,53 @@
+escrita:
+  bucket_avro: avro
+  bucket_errors: errors
+  destinationbucket: processed
+  prefixname: ORIGINALFILES/
+#  topic: csn-logs
+
+dummy_files:
+  class: CsvExcelExtractor
+  csv:
+    header: 0
+    encoding: UTF-8
+    sep: ","
+    low_memory: false
+  excel:
+    header: 1
+  rename_type: regex
+  column_renames:
+    "(?i).*m.s\\s*de\\s*prg.*": data_demanda
+    "(?i).*c.digo.*": cod_cliente
+    "(?i).*grupo.*": gr_merc
+    "(?i).*material.*": sku_compra
+    "(?i).*qtde.*": qtdade_demanda
+  avro_schema:
+    type: record
+    name: demanda
+    fields:
+    - name: data_demanda
+      type: string
+      logicalType: date
+    - name: cod_cliente
+      type:
+      - 'null'
+      - string
+    - name: gr_merc
+      type:
+      - 'null'
+      - string
+    - name: sku_compra
+      type:
+      - 'null'
+      - string
+    - name: qtdade_demanda
+      type:
+      - 'null'
+      - string
+    - name: url_path
+      type:
+      - 'null'
+      - string
+  name: demanda_
+  s3key: TESTE
+  colunapath: url_path
