@@ -7,6 +7,7 @@ from util.log_kafka import createloggerforkafka
 from util import log
 from io import BytesIO
 from globalresources.dataframe_reader import read_dataframe
+from globalresources.yaml_reader import YamlReader
 
 
 def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config: dict) -> None:
@@ -22,9 +23,11 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
     """
     fmsg = f'{bucket}/{key}'
     logger = log.createLogger(fmsg)
-    client = Client(bucket, key)
+    provider, config = list(depara_config.items())[0]
+    yaml_reader = YamlReader(provider)
+    client = Client(bucket, key, yaml_reader)
     logger.warning('client ok')
-    escrita_conf, file_conf = client.get_conf(depara_config)
+    escrita_conf, file_conf = client.get_conf(config)
     logger.warning('conf ok')
     extrator = SelectClassExtraction(file_conf).get_class()
     logger.warning('class ok')
