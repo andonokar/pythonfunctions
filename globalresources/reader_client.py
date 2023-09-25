@@ -30,7 +30,7 @@ class Client:
         client_yaml = yaml_reader.read_yaml_file(conf_bucket, conf_key)
         return client_yaml
 
-    def _validade_folder_conf(self, client_yaml: dict):
+    def _validate_folder_conf(self, client_yaml: dict):
         # Getting the folder for extraction
         folder = self.key.split("/")[0]
         file_conf = client_yaml.get(folder)
@@ -65,6 +65,6 @@ class Client:
         """
         extraction_config = self._validate_depara_config(depara_config)
         client_yaml = self._read_client_conf(extraction_config, yaml_reader)
-        file_conf = self._validade_folder_conf(client_yaml)
+        file_conf = self._validate_folder_conf(client_yaml)
         escrita_conf = self._validate_escrita_conf(client_yaml)
         return escrita_conf, file_conf
