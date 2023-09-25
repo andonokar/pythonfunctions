@@ -3,6 +3,7 @@ from cloud.basic_local_functions import read_yaml_local
 
 
 class YamlReader:
+    """classe para ler yamls dado um cloud provider"""
     _options = {
         'aws': read_yaml_from_s3_object,
         'local': read_yaml_local
