@@ -1,5 +1,5 @@
 from globalresources.criadataframe import StrategyExtractor
-from side_ideas.fastavro_writer import Escrita
+from avro_writer import Escrita
 from globalresources.reader_client import Client
 from globalresources.select_extraction_class import SelectClassExtraction
 from cloud.basic_s3_functions import move_file_s3
@@ -28,9 +28,9 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
     provider, config = list(depara_config.items())[0]
     # instanciando o yaml reader para extrair as configuracoes do cliente
     yaml_reader = YamlReader(provider)
-    client = Client(bucket, key, yaml_reader)
+    client = Client(bucket, key)
     print('client ok')
-    escrita_conf, file_conf = client.get_conf(config)
+    escrita_conf, file_conf = client.get_conf(config, yaml_reader)
     print('conf ok')
     extrator = SelectClassExtraction(file_conf).get_class()
     print('class ok')

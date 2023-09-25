@@ -8,10 +8,9 @@ class YamlReader(Protocol):
 
 class Client:
 
-    def __init__(self, bucket, key, yaml_reader: YamlReader):
+    def __init__(self, bucket, key):
         self.bucket = bucket
         self.key = key
-        self._reader = yaml_reader
 
     def _validate_depara_config(self, depara_config: dict):
         # Getting the configuration based on the bucket
@@ -21,14 +20,14 @@ class Client:
             raise NotImplementedError(f'Nenhum Cliente configurado para o bucket {self.bucket}')
         return extraction_config
 
-    def _read_client_conf(self, extraction_config: dict):
+    def _read_client_conf(self, extraction_config: dict, yaml_reader: YamlReader):
         conf_bucket = extraction_config.get('bucket')
         conf_key = extraction_config.get('key')
         if not (conf_bucket and conf_key):
             raise KeyError(
                 f'O arquivo de configuracao para o {self.bucket} esta mal configurado: confira se as chaves bucket e key existem')
         # Reading the configuration
-        client_yaml = self._reader.read_yaml_file(conf_bucket, conf_key)
+        client_yaml = yaml_reader.read_yaml_file(conf_bucket, conf_key)
         return client_yaml
 
     def _validade_folder_conf(self, client_yaml: dict):
@@ -59,13 +58,13 @@ class Client:
             escrita_conf['prefixname'] = f'{escrita_conf["prefixname"]}/'
         return escrita_conf
 
-    def get_conf(self, depara_config: dict):
+    def get_conf(self, depara_config: dict, yaml_reader: YamlReader):
         """
         Le as configuracoes para a extracao
         :return: a tabela extraida pela classe
         """
         extraction_config = self._validate_depara_config(depara_config)
-        client_yaml = self._read_client_conf(extraction_config)
+        client_yaml = self._read_client_conf(extraction_config, yaml_reader)
         file_conf = self._validade_folder_conf(client_yaml)
         escrita_conf = self._validate_escrita_conf(client_yaml)
         return escrita_conf, file_conf
