@@ -1,12 +1,17 @@
-from util import log
-from cloud.basic_s3_functions import read_yaml_from_s3_object
+from typing import Protocol
+
+
+class YamlReader(Protocol):
+    def read_yaml_file(self, bucket: str, key: str) -> dict:
+        pass
 
 
 class Client:
 
-    def __init__(self, bucket, key):
+    def __init__(self, bucket, key, yaml_reader: YamlReader):
         self.bucket = bucket
         self.key = key
+        self._reader = yaml_reader
 
     def _validate_depara_config(self, depara_config: dict):
         # Getting the configuration based on the bucket
@@ -23,7 +28,7 @@ class Client:
             raise KeyError(
                 f'O arquivo de configuracao para o {self.bucket} esta mal configurado: confira se as chaves bucket e key existem')
         # Reading the configuration
-        client_yaml = read_yaml_from_s3_object(conf_bucket, conf_key)
+        client_yaml = self._reader.read_yaml_file(conf_bucket, conf_key)
         return client_yaml
 
     def _validade_folder_conf(self, client_yaml: dict):
@@ -54,7 +59,6 @@ class Client:
             escrita_conf['prefixname'] = f'{escrita_conf["prefixname"]}/'
         return escrita_conf
 
-    @log.logs
     def get_conf(self, depara_config: dict):
         """
         Le as configuracoes para a extracao
