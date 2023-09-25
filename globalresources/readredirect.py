@@ -12,32 +12,35 @@ from globalresources.yaml_reader import YamlReader
 
 def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config: dict) -> None:
     """
-    Funcional principal a ser executada pelo lambda
+    Funcional principal a ser executada
     Le o cliente, redireciona para o extrator certo, extrai o arquivo, gera o avro, salva na landing zone
     e move os arquivos para o bucket de arquivos processados
-    :param bucket: o bucket de onde veio o arquivo do s3
-    :param file: o arquivo do s3 em bytes
-    :param key: o caminho do arquivo no s3
+    :param bucket: o bucket de onde veio o arquivo
+    :param file: o arquivo em bytes
+    :param key: o caminho do arquivo
     :param depara_config: dicionario onde aponta as configuracoes do cliente
     :return:
     """
+    # criando um log para a funcao
     fmsg = f'{bucket}/{key}'
     logger = log.createLogger(fmsg)
+    # destrinchando o yaml inicial
     provider, config = list(depara_config.items())[0]
+    # instanciando o yaml reader para extrair as configuracoes do cliente
     yaml_reader = YamlReader(provider)
     client = Client(bucket, key, yaml_reader)
-    logger.warning('client ok')
+    print('client ok')
     escrita_conf, file_conf = client.get_conf(config)
-    logger.warning('conf ok')
+    print('conf ok')
     extrator = SelectClassExtraction(file_conf).get_class()
-    logger.warning('class ok')
+    print('class ok')
     try:
         processdf = read_dataframe(file, key, file_conf)
         tables = StrategyExtractor(extrator, processdf).extrair_para_avro()
-        logger.warning('extraction ok')
+        print('extraction ok')
         writer = Escrita(tables, escrita_conf)
         mistakes = writer.escreve()
-        logger.warning('avro ok')
+        print('avro ok')
     except Exception as err:
         if escrita_conf.get('topic'):
             log_args = {
@@ -46,12 +49,12 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
                 'S3_fim': escrita_conf["bucket_errors"],
                 'etapa': 'landing-zone'
             }
-            logger.warning('trying kafka')
-            createloggerforkafka(str(err), 'error', topic=escrita_conf["topic"], **log_args)
-            logger.warning('sucess kafka')
+            print('trying kafka')
+            createloggerforkafka(type(err).__name__ + ': ' + str(err), 'error', topic=escrita_conf["topic"], **log_args)
+            print('sucess kafka')
         move_file_s3(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
         logger.warning('file moved with error')
-        logger.critical(str(err))
+        logger.critical(type(err).__name__ + ': ' + str(err))
         raise err
     else:
         if escrita_conf.get('topic'):
