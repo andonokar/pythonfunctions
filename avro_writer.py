@@ -1,11 +1,16 @@
 # importando as classes
+from typing import Protocol
 from avro.datafile import DataFileWriter
 from avro.io import DatumWriter
 from datetime import datetime
-from cloud.basic_s3_functions import save_file_to_s3_bucket2
 import csv
 from util import log
 from globalresources.treated_dataframe import TreatedDataFrame
+
+
+class CloudProvider(Protocol):
+    def save_file_to_cloud(self, file_path: str, bucket: str, key: str) -> None:
+        pass
 
 
 class Escrita:
@@ -51,7 +56,7 @@ class Escrita:
         return mistake, erros
 
     @log.logs
-    def escreve(self):
+    def escreve(self, cloud: CloudProvider):
         """
         realiza a escrita no avro e, se necessario, no csv para a tabela de geracao
         """
@@ -77,7 +82,7 @@ class Escrita:
                         # inserindo os erros no csv
                         writer = csv.writer(csvarquivo)
                         writer.writerows(erros)
-                    save_file_to_s3_bucket2(csvpath, self.bucketerrors, f'{data.s3key}{show}_{data.name}.csv')
-                save_file_to_s3_bucket2(avropath, self.bucket, f'{data.s3key}{show}_{data.name}.avro')
+                    cloud.save_file_to_cloud(csvpath, self.bucketerrors, f'{data.s3key}{show}_{data.name}.csv')
+                cloud.save_file_to_cloud(avropath, self.bucket, f'{data.s3key}{show}_{data.name}.avro')
                 mistakes.append(mistake)
         return mistakes

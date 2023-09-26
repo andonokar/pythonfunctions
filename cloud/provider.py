@@ -63,7 +63,7 @@ class Provider(ABC):
 
     @staticmethod
     @abstractmethod
-    def save_file_to_cloud(file_path: str, bucket: str, key: str):
+    def save_file_to_cloud(file_path: str, bucket: str, key: str) -> None:
         """
         save binary file to s3 bucket
         :param file_path: file path

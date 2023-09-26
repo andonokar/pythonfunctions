@@ -8,7 +8,7 @@ def test_select_extract_class():
         response = yaml.safe_load(file)
     test_class = SelectClassExtraction()
     result = test_class.get_class(response['dummy_files'])
-    assert result.__name__ == 'CsvExcelExtractor'
+    assert type(result).__name__ == 'CsvExcelExtractor'
 
 
 def test_select_extract_class_wrong_extractor():
@@ -18,7 +18,7 @@ def test_select_extract_class_wrong_extractor():
         test_class = SelectClassExtraction()
         response['dummy_files']['class'] = 'pao'
         result = test_class.get_class(response['dummy_files'])
-        assert result.__name__ == 'CsvExcelExtractor'
+        assert type(result).__name__ == 'CsvExcelExtractor'
 
 
 def test_select_extract_class_empty():
@@ -27,4 +27,4 @@ def test_select_extract_class_empty():
     test_class = SelectClassExtraction()
     response['dummy_files'].pop('class')
     result = test_class.get_class(response['dummy_files'])
-    assert result.__name__ == 'CsvExcelExtractor'
+    assert type(result).__name__ == 'CsvExcelExtractor'

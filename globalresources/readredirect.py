@@ -7,7 +7,7 @@ from util.log_kafka import createloggerforkafka
 from util import log
 from io import BytesIO
 from globalresources.dataframe_reader import read_dataframe
-from globalresources.yaml_reader import YamlReader
+from cloud.cria_provider import CriaProvider
 
 
 def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config: dict) -> None:
@@ -27,10 +27,10 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
     # destrinchando o yaml inicial
     provider, config = list(depara_config.items())[0]
     # instanciando o yaml reader para extrair as configuracoes do cliente
-    yaml_reader = YamlReader(provider)
+    cloud = CriaProvider().create_provider('aws')
     client = Client(bucket, key)
     print('client ok')
-    escrita_conf, file_conf = client.get_conf(config, yaml_reader)
+    escrita_conf, file_conf = client.get_conf(config, cloud)
     print('conf ok')
     extrator = SelectClassExtraction().get_class(file_conf)
     print('class ok')
@@ -39,7 +39,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
         tables = StrategyExtractor(extrator, processdf).extrair_para_avro()
         print('extraction ok')
         writer = Escrita(tables, escrita_conf)
-        mistakes = writer.escreve()
+        mistakes = writer.escreve(cloud)
         print('avro ok')
     except Exception as err:
         if escrita_conf.get('topic'):

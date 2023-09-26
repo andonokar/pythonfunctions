@@ -1,5 +1,5 @@
 from globalresources.reader_client import Client
-from globalresources.yaml_reader import YamlReader
+from cloud.cria_provider import CriaProvider
 import pytest
 import yaml
 
@@ -23,24 +23,24 @@ def test_valitade_depara_config_error():
 
 def test_read_client_conf_wrong_keys():
     with pytest.raises(KeyError):
-        reader = YamlReader('local')
+        reader = CriaProvider().create_provider('local')
         client = Client('tests', 'dummy_files/addresses.csv')
         client._read_client_conf({'buckets': 'tests', 'key': 'dummy_files/test_client_class.yaml'}, reader)
     with pytest.raises(KeyError):
-        reader = YamlReader('local')
+        reader = CriaProvider().create_provider('local')
         client = Client('tests', 'dummy_files/addresses.csv')
         client._read_client_conf({'bucket': 'tests', 'keys': 'dummy_files/test_client_class.yaml'}, reader)
 
 
 def test_read_client_conf_wrong_file():
     with pytest.raises(exceptions.YamlReadingError):
-        reader = YamlReader('local')
+        reader = CriaProvider().create_provider('local')
         client = Client('tests', 'dummy_files/addresses.csv')
         client._read_client_conf({'bucket': 'tests', 'key': 'dummy_files/test_client_classwrong.yaml'}, reader)
 
 
 def test_read_client_conf():
-    reader = YamlReader('local')
+    reader = CriaProvider().create_provider('local')
     client = Client('tests', 'dummy_files/addresses.csv')
     result = client._read_client_conf({'bucket': 'tests', 'key': 'dummy_files/test_client_class.yaml'}, reader)
     with open('tests/dummy_files/test_client_class.yaml', 'r') as file:
@@ -75,7 +75,7 @@ def test_def_validate_escrita_conf():
 
 def test_get_conf():
     client = Client('tests', 'dummy_files/addresses.csv')
-    reader = YamlReader('local')
+    reader = CriaProvider().create_provider('local')
     result = client.get_conf({'tests': {'bucket': 'tests', 'key': 'dummy_files/test_client_class.yaml'}}, reader)
     with open('tests/dummy_files/test_client_class.yaml', 'r') as file:
         dicionario = yaml.safe_load(file)

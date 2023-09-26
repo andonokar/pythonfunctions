@@ -1,8 +1,8 @@
 from typing import Protocol
 
 
-class YamlReader(Protocol):
-    def read_yaml_file(self, bucket: str, key: str) -> dict:
+class CloudProvider(Protocol):
+    def read_yaml_from_file(self, bucket: str, key: str) -> dict:
         pass
 
 
@@ -20,14 +20,14 @@ class Client:
             raise NotImplementedError(f'Nenhum Cliente configurado para o bucket {self.bucket}')
         return extraction_config
 
-    def _read_client_conf(self, extraction_config: dict, yaml_reader: YamlReader):
+    def _read_client_conf(self, extraction_config: dict, yaml_reader: CloudProvider):
         conf_bucket = extraction_config.get('bucket')
         conf_key = extraction_config.get('key')
         if not (conf_bucket and conf_key):
             raise KeyError(
                 f'O arquivo de configuracao para o {self.bucket} esta mal configurado: confira se as chaves bucket e key existem')
         # Reading the configuration
-        client_yaml = yaml_reader.read_yaml_file(conf_bucket, conf_key)
+        client_yaml = yaml_reader.read_yaml_from_file(conf_bucket, conf_key)
         return client_yaml
 
     def _validate_folder_conf(self, client_yaml: dict):
@@ -58,7 +58,7 @@ class Client:
             escrita_conf['prefixname'] = f'{escrita_conf["prefixname"]}/'
         return escrita_conf
 
-    def get_conf(self, depara_config: dict, yaml_reader: YamlReader):
+    def get_conf(self, depara_config: dict, yaml_reader: CloudProvider):
         """
         Le as configuracoes para a extracao
         :return: a tabela extraida pela classe

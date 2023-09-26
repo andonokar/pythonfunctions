@@ -20,7 +20,7 @@ def list_s3_files(bucket: str, folder_path: str) -> list:
     return files_found
 
 
-def move_file_s3(source_bucket_name: str, destination_bucket_name: str, file_key: str, new_file_key: str):
+def move_file_s3(source_bucket_name: str, destination_bucket_name: str, file_key: str, new_file_key: str) -> None:
     """
     Copies a file to another folder in S3 and deletes the old one
     :param source_bucket_name: bucket of origin
@@ -89,7 +89,7 @@ def read_file_from_s3_object(bucket: str, key: str) -> bytes:
     return response['Body'].read()
 
 
-def save_file_to_s3_bucket2(file_path: str, bucket: str, key: str):
+def save_file_to_s3_bucket2(file_path: str, bucket: str, key: str) -> None:
     """
     save binary file to s3 bucket
     :param file_path: file path

@@ -6,7 +6,7 @@ class SelectClassExtraction:
         'CsvExcelExtractor': extc.CsvExcelExtractor
     }
 
-    def get_class(self, conf: dict):
+    def get_class(self, conf: dict) -> extc.Extrator:
         """
         Redireciona o arquivo lido a classe certa para realizar a extracao
         :return: a tabela extraida pela classe
@@ -17,4 +17,4 @@ class SelectClassExtraction:
         # Checking if the class exists
         if not check_class or not isinstance(check_class, type):
             raise NotImplementedError(f'A classe {extraction_class} nao existe')
-        return check_class
+        return check_class()
