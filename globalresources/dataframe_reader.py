@@ -13,8 +13,9 @@ def _read_excel(file: str | BytesIO, config: dict) -> pd.DataFrame:
     excel_options = config.get('excel')
     if not excel_options:
         raise KeyError('chave excel ausente na configuracao yaml')
-    header = excel_options.get('header')
-    if header is None:
+    try:
+        header = excel_options['header']
+    except KeyError:
         raise KeyError('a chave header deve ser especificado')
     dataframe = pd.read_excel(file, header=header)
     return dataframe
@@ -30,12 +31,13 @@ def _read_csv(file: str | BytesIO, config: dict) -> pd.DataFrame:
     csv_options = config.get('csv')
     if not csv_options:
         raise KeyError('chave csv ausente na configuracao yaml')
-    header = csv_options.get('header')
+    try:
+        header = csv_options['header']
+    except KeyError:
+        raise KeyError('a chave header deve ser especificado')
     encoding = csv_options.get('encoding', 'UTF-8')
     sep = csv_options.get('sep', ',')
     low_memory = csv_options.get('low_memory', False)
-    if header is None:
-        raise KeyError('a chave header deve ser especificado')
     dataframe = pd.read_csv(file, header=header, encoding=encoding, sep=sep, low_memory=low_memory)
     return dataframe
 
