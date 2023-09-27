@@ -105,3 +105,17 @@ def save_file_to_s3_bucket2(file_path: str, bucket: str, key: str) -> None:
         raise exceptions.FailedSavingFileToS3(f'error saving in s3: file_path={file_path}, bucket={bucket}, key={key}, {exc}')
     else:
         return response
+
+
+def download_file_from_s3_object(bucket: str, key: str, filename: str) -> None:
+    """
+    Read file in s3 bucket
+    :param bucket: s3 bucket name
+    :param key: filename
+    :param filename: the name the file will
+    :return: none
+    """
+    fsmg = f'{__name__}:{read_file_from_s3_object.__name__}'
+    response = None
+    s3_client = boto3.client('s3')
+    response = s3_client.download_file(Bucket=bucket, Key=key, Filename=filename)

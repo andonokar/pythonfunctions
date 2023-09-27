@@ -1,4 +1,4 @@
 local:
   tests:
     bucket: tests
-    key: dummy_files/test_client_class.yaml
+    key: dummy_files/addresses.yaml

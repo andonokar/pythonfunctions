@@ -2,7 +2,6 @@ from globalresources.criadataframe import StrategyExtractor
 from avro_writer import Escrita
 from globalresources.reader_client import Client
 from globalresources.select_extraction_class import SelectClassExtraction
-from cloud.basic_s3_functions import move_file_s3
 from util.log_kafka import createloggerforkafka
 from util import log
 from io import BytesIO
@@ -27,7 +26,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
     # destrinchando o yaml inicial
     provider, config = list(depara_config.items())[0]
     # instanciando o yaml reader para extrair as configuracoes do cliente
-    cloud = CriaProvider().create_provider('aws')
+    cloud = CriaProvider().create_provider(provider)
     client = Client(bucket, key)
     print('client ok')
     escrita_conf, file_conf = client.get_conf(config, cloud)
@@ -52,7 +51,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
             print('trying kafka')
             createloggerforkafka(type(err).__name__ + ': ' + str(err), 'error', topic=escrita_conf["topic"], **log_args)
             print('sucess kafka')
-        move_file_s3(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
+        cloud.move_file(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
         logger.warning('file moved with error')
         logger.critical(type(err).__name__ + ': ' + str(err))
         raise err
@@ -71,5 +70,5 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
                 createloggerforkafka(f'processado com {mistakes} erros, conferir o bucket de erros', 'warning', topic=escrita_conf["topic"], **log_args)
                 logger.warning(f'{mistakes} erros gerando avro')
             logger.warning('sucess kafka')
-        move_file_s3(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
-        logger.warning('file moved with sucess')
+        cloud.move_file(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
+        logger.warning(f'file moved with sucess, mistakes = {mistakes}')
