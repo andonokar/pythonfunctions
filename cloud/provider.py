@@ -5,9 +5,8 @@ class Provider(ABC):
     """
     classe interface para provedores cloud
     """
-    @staticmethod
     @abstractmethod
-    def list_files(bucket: str, folder_path: str) -> list:
+    def list_files(self, bucket: str, folder_path: str) -> list:
         """
         lists all files inside a bucket or folder from s3
         :param bucket: s3 bucket name
@@ -16,9 +15,8 @@ class Provider(ABC):
         """
         pass
 
-    @staticmethod
     @abstractmethod
-    def move_file(source_bucket_name: str, destination_bucket_name: str, file_key: str, new_file_key: str) -> None:
+    def move_file(self, source_bucket_name: str, destination_bucket_name: str, file_key: str, new_file_key: str) -> None:
         """
         Copies a file to another folder in S3 and deletes the old one
         :param source_bucket_name: bucket of origin
@@ -28,9 +26,8 @@ class Provider(ABC):
         """
         pass
 
-    @staticmethod
     @abstractmethod
-    def read_json_from_file(bucket: str, key: str) -> dict:
+    def read_json_from_file(self, bucket: str, key: str) -> dict:
         """
         Read JSON file in s3 bucket
         :param bucket: s3 bucket name
@@ -39,9 +36,8 @@ class Provider(ABC):
         """
         pass
 
-    @staticmethod
     @abstractmethod
-    def read_yaml_from_file(bucket: str, key: str) -> dict:
+    def read_yaml_from_file(self, bucket: str, key: str) -> dict:
         """
         Read YAML file in s3 bucket
         :param bucket: s3 bucket name
@@ -50,9 +46,8 @@ class Provider(ABC):
         """
         pass
 
-    @staticmethod
     @abstractmethod
-    def read_file(bucket: str, key: str) -> bytes:
+    def read_file(self, bucket: str, key: str) -> bytes:
         """
         Read file in s3 bucket
         :param bucket: s3 bucket name
@@ -61,9 +56,8 @@ class Provider(ABC):
         """
         pass
 
-    @staticmethod
     @abstractmethod
-    def save_file_to_cloud(file_path: str, bucket: str, key: str) -> None:
+    def save_file_to_cloud(self, file_path: str, bucket: str, key: str) -> None:
         """
         save binary file to s3 bucket
         :param file_path: file path
