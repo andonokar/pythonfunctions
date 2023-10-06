@@ -1,6 +1,6 @@
 from cloud.cria_provider import CriaProvider
 reader = CriaProvider().create_provider('aws')
-depara_config = reader.read_yaml_from_file("test-conf-domrock", "depara_conf.yaml")
+depara_config = reader.read_yaml_from_file("csn-configurarion-layer-prd-9154-8417-5192", "depara-conf.yaml")
 kafka_config = {}
 auth_config = {}
 try:

@@ -1,7 +1,7 @@
 import io
 from globalresources.readredirect import read_and_redirect
 from cloud.basic_s3_functions import read_file_from_s3_object
-from variables import depara_config, auth_config
+from variables import depara_config, auth_config, kafka_config
 from authentication.cognito import cognito_aut
 
 
@@ -19,4 +19,4 @@ def handler(event, context):
     # buffering the file for the extraction
     buffer = io.BytesIO(file)
     # main function
-    read_and_redirect(bucket, buffer, key, depara_config)
+    read_and_redirect(bucket, buffer, key, depara_config, kafka_config)

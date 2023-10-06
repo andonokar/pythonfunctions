@@ -7,10 +7,9 @@ from confluent_kafka.serialization import (
 )
 import json
 from datetime import datetime
-from variables import kafka_config
 
 
-def createloggerforkafka(message, level, topic, **kwargs):
+def createloggerforkafka(message, level, topic, kafka_config, **kwargs):
     """
     Função para criar um ponto de observação através do uso de logs e enviar ao kafka
     :return:

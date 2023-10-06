@@ -9,7 +9,7 @@ from globalresources.dataframe_reader import read_dataframe
 from cloud.cria_provider import CriaProvider
 
 
-def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config: dict) -> None:
+def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config: dict, kafka_config: dict) -> None:
     """
     Funcional principal a ser executada
     Le o cliente, redireciona para o extrator certo, extrai o arquivo, gera o avro, salva na landing zone
@@ -18,6 +18,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
     :param file: o arquivo em bytes
     :param key: o caminho do arquivo
     :param depara_config: dicionario onde aponta as configuracoes do cliente
+    :param kafka_config: dicionario onde aponta as configuracoes do kafka
     :return:
     """
     # criando um log para a funcao
@@ -65,9 +66,9 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
             }
             logger.warning('trying kafka')
             if len(mistakes) == 0:
-                createloggerforkafka('processado ok', 'info', topic=escrita_conf["topic"], **log_args)
+                createloggerforkafka('processado ok', 'info', topic=escrita_conf["topic"], kafka_config=kafka_config, **log_args)
             else:
-                createloggerforkafka(f'processado com {mistakes} erros, conferir o bucket de erros', 'warning', topic=escrita_conf["topic"], **log_args)
+                createloggerforkafka(f'processado com {mistakes} erros, conferir o bucket de erros', 'warning', topic=escrita_conf["topic"], kafka_config=kafka_config, **log_args)
                 logger.warning(f'{mistakes} erros gerando avro')
             logger.warning('sucess kafka')
         cloud.move_file(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
