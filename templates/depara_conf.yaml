@@ -5,3 +5,11 @@ aws: # Cloud provider: aws, gcp, oracle, local, etc
   sftp-telecom-test:
     bucket: test-conf-domrock
     key: telecom.yaml
+kafka: # kafka settings
+  active: true # true if kafka is active in current project, if set to false, bucket and key can be left empty
+  bucket: test-conf-domrock # bucket to kafka configuration
+  key: kafka_config.yaml # key to kafka configuration
+authentication: # authentication settings
+  active: true # true if authetication is active in current project, if set to false, bucket and key can be left empty
+  bucket: test-conf-domrock # bucket to authetication configuration
+  key: cognito_config.yaml # key to authetication configuration

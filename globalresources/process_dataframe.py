@@ -70,7 +70,7 @@ class ProcessDataFrame:
             if not rename_function:
                 raise NotImplementedError(f'o metodo {rename_type} para renomear colunas nao existe')
             rename_function(column_renames)
-            return self.df
+        return self.df
 
     def set_avro_schema(self):
         """

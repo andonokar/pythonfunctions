@@ -1,22 +1,9 @@
 import pandas as pd
-from util import log
 from globalresources.basic_extract_functions import (
     convert_boolean, convert_decimal)
 from globalresources.process_dataframe import ProcessDataFrame
 from abc import ABC, abstractmethod
-from functools import wraps
 from globalresources.treated_dataframe import TreatedDataFrame
-
-
-def check_token(func):
-    @wraps(func)
-    def inner(*args, **kwargs):
-        # DO SOMETHING FOR API CHECK
-        # if config.get('hash') != 'uMHBDosKoqTtFOsaS7kmy3XT7YMz9U7L':
-        #     raise ConnectionRefusedError('o token encontra-se invalido, contate o suporte')
-        result = func(*args, **kwargs)
-        return result
-    return inner
 
 
 class Extrator(ABC):
@@ -83,8 +70,6 @@ class CsvExcelExtractor(Extrator):
         df = df.where((pd.notnull(df)), None)
         return df
 
-    @check_token
-    @log.logs
     def prepara_tabela(self, processdf: ProcessDataFrame) -> list[TreatedDataFrame]:
         # validando o token
         config = processdf.config

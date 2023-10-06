@@ -1,11 +1,11 @@
 import io
 from globalresources.readredirect import read_and_redirect
 from cloud.basic_s3_functions import read_file_from_s3_object
-from variables import depara_config
+from variables import depara_config, auth_config
 from authentication.cognito import cognito_aut
 
 
-@cognito_aut
+@cognito_aut(auth_config)
 def handler(event, context):
     """main lambda function"""
     # getting the file bucket
