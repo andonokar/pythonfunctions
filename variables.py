@@ -3,14 +3,16 @@ reader = CriaProvider().create_provider('aws')
 depara_config = reader.read_yaml_from_file("csn-configurarion-layer-prd-9154-8417-5192", "depara-conf.yaml")
 kafka_config = {}
 auth_config = {}
-try:
-    kafka_options = depara_config['kafka']
-    auth_options = depara_config['authentication']
-except KeyError as err:
-    raise KeyError(f'as configuracoes de kafka ou authentication nao existem: {err}')
-kafka = kafka_options.get('active', False)
-auth = auth_options.get('active', False)
-if kafka:
-    kafka_config = reader.read_yaml_from_file(kafka_options.get('bucket'), kafka_options.get('key'))
-if auth:
-    auth_config = reader.read_yaml_from_file(auth_options.get('bucket'), auth_options.get('key'))
+kafka_options = depara_config.get('kafka')
+auth_options = depara_config.get('authentication')
+
+if kafka_options:
+    kafka = kafka_options.get('active', False)
+    if kafka:
+        kafka_config = reader.read_yaml_from_file(kafka_options.get('bucket'), kafka_options.get('key'))
+
+
+if auth_options:
+    auth = auth_options.get('active', False)
+    if auth:
+        auth_config = reader.read_yaml_from_file(auth_options.get('bucket'), auth_options.get('key'))
