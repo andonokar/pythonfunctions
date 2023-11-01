@@ -57,10 +57,10 @@ class CsvExcelExtractor(Extrator):
             df[float_int_column].fillna(0, inplace=True)
 
         for date_column in column_dates_df:
-            df[date_column] = pd.to_datetime(df[date_column], errors='ignore').dt.strftime('%Y-%m-%d')
+            df[date_column] = pd.to_datetime(df[date_column], dayfirst=True, errors='coerce').dt.strftime('%Y-%m-%d')
 
         for timestamp_column in timestamp_dates_df:
-            df[timestamp_column] = pd.to_datetime(df[timestamp_column], errors='ignore').dt.strftime(
+            df[timestamp_column] = pd.to_datetime(df[timestamp_column], dayfirst=True, errors='coerce').dt.strftime(
                 '%Y-%m-%d %H:%M:%S.%f')
 
         for bool_column in column_boolean_df:
