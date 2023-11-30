@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y build-essential
 RUN pip install -r ${FUNCTION_DIR}/requirements.txt
 WORKDIR ${FUNCTION_DIR}
 RUN python3 setup.py build_ext --inplace
-RUN find . -type f -name "*.py" ! -name "app.py" -delete
+RUN find . -type f -name "*.py" ! -name "e2etest.py" -delete
 RUN find . -type f -name "*.c" -delete
 RUN rm -rf build
 
