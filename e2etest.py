@@ -25,3 +25,5 @@ def main():
         read_and_redirect(bucket, buffer, key, depara_config, kafka_config)
 
 
+if __name__ == "__main__":
+    main()
