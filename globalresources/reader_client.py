@@ -32,7 +32,10 @@ class Client:
 
     def _validate_folder_conf(self, client_yaml: dict):
         # Getting the folder for extraction
-        folder = self.key.split("/")[0]
+        folder_depth = client_yaml.get("folder_depth", 0)
+        if not isinstance(folder_depth, int):
+            raise ValueError("Chave folder_depth, se presente, deve ser um inteiro")
+        folder = self.key.split("/")[folder_depth]
         file_conf = client_yaml.get(folder)
         # Checking if the configuration for the folder exists
         if not file_conf:
