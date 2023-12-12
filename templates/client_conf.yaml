@@ -4,7 +4,11 @@ escrita:
   bucket_errors: datalake-errors-933447815926 # Error files
   destinationbucket: datalake-processed-files-933447815926 # files successfully processed
   prefixname: ORIGINALFILES/CSN/ # the first folder in where to put them
+  prefix_errors: # folder prefix for errors
+  prefix_processed: # folder prefix for processed files
   topic: csn-logs # optional, the topic to write the logs in kafka, use this key only if you need kafka
+
+folder_depth: 1 # Folder depth expected for the client
 
 # Extraction folder from the client bucket
 DEMANDA: # Name must be exactly as the folder of the file | Case sensitive
