@@ -52,7 +52,7 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
             print('trying kafka')
             createloggerforkafka(type(err).__name__ + ': ' + str(err), 'error', topic=escrita_conf["topic"], **log_args)
             print('sucess kafka')
-        cloud.move_file(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf["prefixname"]}{key}')
+        cloud.move_file(bucket, escrita_conf["bucket_errors"], key, f'{escrita_conf.get("prefix_errors")}{escrita_conf["prefixname"]}{key}')
         logger.warning('file moved with error')
         logger.critical(type(err).__name__ + ': ' + str(err))
         raise err
@@ -71,5 +71,5 @@ def read_and_redirect(bucket: str, file: str | BytesIO, key: str, depara_config:
                 createloggerforkafka(f'processado com {mistakes} erros, conferir o bucket de erros', 'warning', topic=escrita_conf["topic"], kafka_config=kafka_config, **log_args)
                 logger.warning(f'{mistakes} erros gerando avro')
             logger.warning('sucess kafka')
-        cloud.move_file(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf["prefixname"]}{key}')
+        cloud.move_file(bucket, escrita_conf["destinationbucket"], key, f'{escrita_conf.get("prefix_processed")}{escrita_conf["prefixname"]}{key}')
         logger.warning(f'file moved with sucess, mistakes = {mistakes}')
