@@ -7,6 +7,7 @@ from variables import kafka_config
 from variables import auth_config
 import sys
 from authentication.cognito import cognito_aut
+from util import log
 
 
 @cognito_aut(auth_config)
@@ -22,7 +23,12 @@ def main():
     for key in file_array:
         file = read_file_from_s3_object(bucket, key)
         buffer = BytesIO(file)
-        read_and_redirect(bucket, buffer, key, depara_config, kafka_config)
+        fmsg = f"{bucket}/{key}"
+        logger = log.createLogger(fmsg)
+        try:
+            read_and_redirect(bucket, buffer, key, depara_config, kafka_config)
+        except Exception as err:
+            logger.critical(type(err).__name__ + ': ' + str(err))
 
 
 if __name__ == "__main__":
