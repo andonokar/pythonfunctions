@@ -26,6 +26,8 @@ class Escrita:
         self.tables = tables
         self.bucket = conf['bucket_avro']
         self.bucketerrors = conf['bucket_errors']
+        self.prefixerrors = conf.get('prefix_errors')
+        self.prefixprocessed = conf.get('prefix_processed')
 
     @staticmethod
     def _write_avro(data: TreatedDataFrame, writer: DataFileWriter):
@@ -82,7 +84,7 @@ class Escrita:
                         # inserindo os erros no csv
                         writer = csv.writer(csvarquivo)
                         writer.writerows(erros)
-                    cloud.save_file_to_cloud(csvpath, self.bucketerrors, f'{data.s3key}{show}_{data.name}.csv')
+                    cloud.save_file_to_cloud(csvpath, self.bucketerrors, f'{self.prefixerrors}/{data.s3key}{show}_{data.name}.csv')
                 cloud.save_file_to_cloud(avropath, self.bucket, f'{data.s3key}{show}_{data.name}.avro')
                 mistakes.append(mistake)
         return mistakes
