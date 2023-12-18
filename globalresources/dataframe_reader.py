@@ -42,6 +42,10 @@ def _read_csv(file: str | BytesIO, config: dict) -> pd.DataFrame:
     return dataframe
 
 
+def _read_txt(file: str | BytesIO, config: dict) -> pd.DataFrame:
+    pass
+
+
 def read_dataframe(file: str | BytesIO, key: str, config: dict) -> ProcessDataFrame:
     """
     instancia a classe ProcessDataFrame com o dataframe e o arquivo de configuracao
@@ -56,6 +60,7 @@ def read_dataframe(file: str | BytesIO, key: str, config: dict) -> ProcessDataFr
         'xlsb': _read_excel,
         'xlsm': _read_excel,
         'xlsx': _read_excel,
+        'txt': _read_txt
     }
     ext = key.split('.')[-1].lower()
     method = depara.get(ext)
